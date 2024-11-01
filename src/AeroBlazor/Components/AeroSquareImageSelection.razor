@@ -1,0 +1,46 @@
+<style>
+    .flex-container {
+        display: flex;
+        flex-direction: column; /* Stacks children vertically */
+        align-items: center; /* Center-aligns the flex items horizontally */
+    }
+    .titleText
+    {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    @@media screen and (min-width: 601px) {
+      .titleText {
+        font-size: 1rem;
+      }
+    }
+    
+    @@media screen and (max-width: 600px) {
+      .titleText {
+        font-size: 0.7rem;
+      }
+    }
+</style>
+<AeroSquareSelection OnSelected="@OnSelected" IsSelected="Selected">
+    <div class="flex-container">
+        <MudImage Src="@ImageUrl" ObjectPosition="ObjectPosition.Center" ObjectFit="ObjectFit.ScaleDown" Style="display:block;margin-left: auto;margin-right: auto;width: 70%; margin-top: 5%"></MudImage>
+        <MudText Typo="Typo.subtitle2" Align="Align.Center" Class="titleText">@Label</MudText>
+    </div>
+</AeroSquareSelection>
+
+@code {
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public string? ImageUrl { get; set; }
+
+    [Parameter]
+    public EventCallback OnSelected { get; set; }
+
+    [Parameter]
+    public bool Selected { get; set; }
+
+}

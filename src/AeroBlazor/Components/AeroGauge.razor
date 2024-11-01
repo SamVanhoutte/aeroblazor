@@ -1,0 +1,30 @@
+@switch (Type)
+{
+    case (GaugeType.HorizontalLine):
+        <MudProgressLinear Max="@Maximum" Min="0" Value="@Value" Rounded="true" Size="Size.Medium" Color="Color.Secondary"></MudProgressLinear>
+        break;
+    case (GaugeType.Circle):
+        <MudProgressCircular Max="@Maximum" Min="0" Value="@Value" Size="Size.Medium" Color="Color.Secondary"></MudProgressCircular>
+        break;
+    case (GaugeType.Battery):
+        <AeroWarning>Battery gauge is not yet implemented</AeroWarning>
+        break;
+}
+<AeroFlexContainer CenterAlign="true">
+    <MudText Align="Align.Center" Typo="Typo.caption">@Label (@Value / @Maximum)</MudText>
+</AeroFlexContainer>
+@code {
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public int Maximum { get; set; } = 100;
+    [Parameter] public int Value { get; set; }
+    [Parameter] public GaugeType Type { get; set; } = GaugeType.HorizontalLine;
+
+    public enum GaugeType
+    {
+        HorizontalLine,
+        Circle,
+        Battery
+    }
+    
+
+}

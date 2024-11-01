@@ -1,0 +1,63 @@
+<AeroFlexContainer>
+    <MudSlider Color="Color.Secondary" T="int" Disabled="ReadOnly" Value="@Value" ValueChanged="@(async (v) => await TriggerValueChangeAsync(v))" Min="@Min" Max="@Max" Step="@Step" Size="@Size" Variant="Variant.Filled" ValueLabel="true">
+        <AeroFlexContainer CenterAlign="true" FullWidth="true">
+        <MudText Typo="Typo.caption" Align="Align.Center">@printLabel</MudText>
+        </AeroFlexContainer>
+    </MudSlider>
+    @if (!string.IsNullOrEmpty(HelperText))
+    {
+        <AeroContextualHelp HelpText="@HelperText"></AeroContextualHelp>
+    }
+</AeroFlexContainer>
+
+@code {
+    private int value;
+    private string? printLabel { get; set; }
+
+    [Parameter]
+    public bool ReadOnly { get; set; } = false;
+
+    [Parameter]
+    public string? HelperText { get; set; }
+
+    [Parameter] public int Min { get; set; } = 0;
+    [Parameter] public int Max { get; set; } = 100;
+    [Parameter] public int Step { get; set; } = 1;
+    [Parameter] public Size Size { get; set; } = MudBlazor.Size.Medium;
+    [Parameter] public Func<int, string>? LabelExpression { get; set; }
+    [Parameter] public string? Label { get; set; }
+    
+    [Parameter]
+    public int Value
+    {
+        get => value;
+        set
+        {
+            this.value = value;
+        }
+    }
+    [Parameter]
+    public EventCallback<int> ValueChanged { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ApplyLabel();
+    }
+
+    private void ApplyLabel()
+    {
+        if(LabelExpression!=null)
+        {
+            printLabel = LabelExpression(value);
+        }
+        else
+        {
+            printLabel = $"{Label} : ({value})";
+        }
+    }
+    private async Task TriggerValueChangeAsync(int value)
+    {
+        ApplyLabel();
+        await ValueChanged.InvokeAsync(value);
+    }
+}

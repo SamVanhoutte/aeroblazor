@@ -1,0 +1,60 @@
+@inject IClipboardService ClipboardService
+
+@if (!string.IsNullOrEmpty(Name))
+{
+    <MudText Typo="Typo.caption" Color="TextColor">@Name</MudText>
+}
+@if (Value!=null)
+{
+    @if (string.IsNullOrEmpty(Href))
+    {
+        <AeroFlexContainer>
+            <MudText Color="@TextColor" Typo="Typo.body1">@ValueToShow</MudText>
+            @if (AllowCopy)
+            {
+                <MudIconButton Icon="@Icons.Material.Outlined.ContentCopy" Size="Size.Small" OnClick="@(async () => await CopyTextToClipboard())"></MudIconButton>
+            }
+        </AeroFlexContainer>
+    }
+    else
+    {
+        <AeroFlexContainer>
+            <MudLink Color="@TextColor" Href="@Href" Target="@HrefTarget" Underline="Underline.Always" Typo="Typo.body1">@ValueToShow</MudLink>
+            @if (AllowCopy)
+            {
+                <MudIconButton Icon="@Icons.Material.Outlined.ContentCopy" Size="Size.Small" OnClick="@(async () => await CopyTextToClipboard())"></MudIconButton>
+            }
+        </AeroFlexContainer>
+    }
+}
+else
+{
+    <MudSkeleton/>
+}
+
+@code {
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public string? CopyValue { get; set; }
+    [Parameter] public string? Href { get; set; }
+    [Parameter] public bool AllowCopy { get; set; } = false;
+    [Parameter] public bool Secret { get; set; } = false;
+    [Parameter] public bool Large { get; set; } = false;
+    [Parameter] public string? Target { get; set; }
+    [Parameter] public bool Light { get; set; } = false;
+
+    private string HrefTarget => Target ?? "_self";
+    private string ValueToShow => Secret ? new string('*', Value.Length) : Value;
+    private Color TextColor => Light ? Color.Info : Color.Primary;
+    
+    private async Task CopyTextToClipboard()
+    {
+        await ClipboardService.CopyToClipboardAsync(CopyValue ?? Value);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+}

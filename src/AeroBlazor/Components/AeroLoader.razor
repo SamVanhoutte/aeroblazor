@@ -1,0 +1,29 @@
+@using Microsoft.Extensions.Options
+@inject IOptions<AeroBehaviorOptions> BehaviorOptions
+
+<AeroFlexContainer>
+    @if(string.IsNullOrEmpty(customImageUrl))
+    {
+        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+    }
+    else
+    {
+        <MudImage Src="images/waiting.gif" ObjectPosition="ObjectPosition.Center" Height="@imageHeight"></MudImage>
+    }
+    @* <MudProgressCircular Color="Color.Success" Indeterminate="true" Class="my-7"/> *@
+    @if (!string.IsNullOrEmpty(WaitingMessage))
+    {
+        <MudText Style="margin-left: 10px;">@WaitingMessage</MudText>
+    }
+</AeroFlexContainer>
+@code {
+    [Parameter]
+    public string? WaitingMessage { get; set; }
+
+    [Parameter]
+    public bool Small { get; set; }
+
+    private int imageHeight => Small ? 20 : 100;
+
+    private string? customImageUrl => BehaviorOptions?.Value?.CustomLoaderImageUrl;
+}

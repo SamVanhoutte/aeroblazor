@@ -1,0 +1,23 @@
+@inject IThemeManager ThemeManager
+<nav>
+    <AeroFlexContainer Stretch="true" Height="@Height" CenterAlign="true" FullHeight="true" Background="@ThemeManager.CurrentTheme.PaletteLight.Info">
+        @foreach(var item in Items)
+        {
+            @if(item != Items.FirstOrDefault())
+            {
+                <AeroDivider Type="AeroDividerType.Horizontal" Minimal="true"/>
+            }
+            @if (!string.IsNullOrEmpty(item.Icon))
+            {
+                <MudIcon Icon="@item.Icon" Color="@(item.Tertiary ? Color.Success : Color.Secondary)"/>
+            }
+            <MudLink Href="@(item.Href)" Color="@(item.Tertiary ? Color.Success : Color.Secondary)" Typo="Typo.caption">@(item.Label)</MudLink>
+        }
+    </AeroFlexContainer>
+</nav>
+@code {
+    private bool firstItem = true;
+    [Parameter] public List<AeroMenuItem> Items { get; set; }
+    [Parameter] public string? Height { get; set; }
+    
+}

@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Authors>Sam Vanhoutte</Authors>
+        <Description>A blazor library, extending MudBlazor</Description>
+        <PackageProjectUrl>https://github.com/SamVanhoutte/aeroblazor</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/SamVanhoutte/aeroblazor</RepositoryUrl>
+        <RepositoryType>github</RepositoryType>
+        <PackageReleaseNotes>Initial version</PackageReleaseNotes>
+        <Version>1.1.0</Version>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Azure.Data.Tables" Version="12.9.1" />
+        <PackageReference Include="BlazorGoogleMaps" Version="4.7.12" />
+        <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="7.0.1" />
+        <PackageReference Include="Columbae" Version="2.3.0" />
+        <PackageReference Include="Flurl.Http" Version="4.0.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.8" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
+        <PackageReference Include="Microsoft.Identity.Web" Version="3.2.0" />
+        <PackageReference Include="MudBlazor" Version="7.4.0" />
+        <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+    </ItemGroup>
+    <ItemGroup>
+        <SupportedPlatform Include="browser"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="StaticData\defaultmapstyle.json" />
+      <EmbeddedResource Include="StaticData\defaultmapstyle.json" />
+    </ItemGroup>
+
+</Project>

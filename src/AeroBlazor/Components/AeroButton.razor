@@ -1,0 +1,87 @@
+@inherits MudButton
+
+<MudElement @bind-Ref="@_elementReference"
+            HtmlTag="@HtmlTag"
+            Class="@Classname"
+            Style="@Style"
+            @attributes="UserAttributes"
+            @onclick="OnClickHandler"
+            type="@ButtonType.ToDescriptionString()"
+            href="@Href"
+            target="@Target"
+            rel="@(Target == "_blank" ? "noopener" : null)"
+            disabled="@shouldDisable">
+    <span class="mud-button-label">
+        @if (!string.IsNullOrWhiteSpace(StartIcon) && !IsLoading)
+        {
+            <span class="@StartIconClass">
+                <MudIcon Icon="@StartIcon" Size="@Size" Color="@IconColor"/>
+            </span>
+        }
+        @if (IsLoading)
+        {
+            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+            <MudText Class="ms-2">@(LoadingText ?? "Processing")</MudText>
+        }
+        else
+        {
+            <MudText>@ChildContent</MudText>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(@EndIcon))
+        {
+            <span class="@EndIconClass">
+                <MudIcon Icon="@EndIcon" Size="@Size" Color="@IconColor"/>
+            </span>
+        }
+    </span>
+
+</MudElement>
+
+@code {
+   
+    [Parameter]
+    public bool IsLoading { get; set; }
+    
+    [Parameter]
+    public ButtonMode Mode { get; set; } = ButtonMode.Default;
+    
+    [Parameter]
+    public string? LoadingText { get; set; }
+
+    private bool shouldDisable => Disabled || IsLoading;
+
+    protected override void OnParametersSet()
+    {
+        // Set defaults first
+        var baseColor = base.Color;
+        Variant = Variant.Filled;
+        Color = Color.Secondary;
+        switch (Mode)
+        {
+            case ButtonMode.Subtle:
+                Variant = Variant.Outlined;
+                Color = Color.Tertiary;
+                break;
+            case ButtonMode.Warning:
+                Color = Color.Warning;
+                break;
+            case ButtonMode.Default:
+            default:
+                break;
+        }
+        if(baseColor!= Color.Default){
+            Color = baseColor;
+        }
+        Class = Class + " rounded-xl";
+        base.OnParametersSet();
+    }
+
+    public enum ButtonMode
+    {
+        Default = 0,
+        Subtle = 1,
+        Warning = 2
+    }
+}
+

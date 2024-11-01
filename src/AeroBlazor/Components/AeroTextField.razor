@@ -1,0 +1,70 @@
+@using System.Linq.Expressions
+@typeparam T
+<AeroFlexContainer FullWidth="true">
+    <MudTextField T="@T" For="@For" Value="@Value" ValueChanged="@(async(e)=>await TriggerValueChangeAsync(e))" 
+                  ReadOnly="@ReadOnly" Label="@Label" Variant="@Variant" HelperText="@HelperText" Margin="@Margin"
+                  Mask="@Mask" InputType="@inputType" FullWidth="@FullWidth" Lines="@Lines"
+                  Class="rounded-xl" Required="@(Required??false)" RequiredError="@RequiredError"/>
+    @if (!string.IsNullOrEmpty(ContextualHelp))
+    {
+        <AeroContextualHelp HelpText="@ContextualHelp"></AeroContextualHelp>
+    }
+</AeroFlexContainer>
+
+@code {
+
+    private T? textValue;
+
+    [Parameter]
+    public T? Value
+    {
+        get => textValue;
+        set => textValue = value;
+    }
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public Margin Margin { get; set; } = Margin.Normal;
+
+    [Parameter] public int Lines { get; set; } = 1;
+    
+    [Parameter]
+    public string? HelperText { get; set; }
+    
+    [Parameter]
+    public string? RequiredError { get; set; } = "***";
+
+    [Parameter]
+    public bool? Required { get; set; }
+
+    [Parameter]
+    public string? ContextualHelp { get; set; }
+
+    [Parameter]
+    public bool ReadOnly { get; set; } = false;
+    
+    [Parameter]
+    public bool Secret { get; set; } = false;
+
+    [Parameter]
+    public bool FullWidth { get; set; } = false;
+
+    [Parameter]
+    public IMask? Mask { get; set; }
+    
+    [Parameter]
+    public EventCallback<T?> ValueChanged { get; set; }
+
+    [Parameter]
+    public Expression<Func<T>>? For { get; set; }
+    
+    public Variant Variant => ReadOnly ? Variant.Text : Variant.Outlined;
+    private InputType inputType => Secret ? InputType.Password : InputType.Text;
+    private async Task TriggerValueChangeAsync(T value)
+    {
+        await ValueChanged.InvokeAsync(value);
+    }
+
+}

@@ -1,0 +1,33 @@
+@* Doc! Inject DefaultThemeManager if not overridden *@
+@inject IThemeManager ThemeManager
+
+@if (Type == AeroDividerType.Horizontal)
+{
+    <span style="@widthStyle">&nbsp;</span>
+}
+else
+{
+    @if (ShowLine)
+    {
+        <MudDivider DividerType="DividerType.FullWidth" Style="@DividerStyle"/>
+    }
+    @if (AddSpace)
+    {
+        <p style="@heightStyle">&nbsp;</p>
+    }
+}
+
+@code{
+    [Parameter] public AeroDividerType Type { get; set; } = AeroDividerType.Line;
+    [Parameter] public bool Minimal { get; set; } = false;
+    
+    private string DividerStyle => $"border-color: {ThemeManager.CurrentTheme.PaletteLight.Secondary.Value}; border-width: 1px;";
+
+    private bool ShowLine => Type != AeroDividerType.Blank;
+    private bool AddSpace => Type != AeroDividerType.Line;
+
+    private string blankSize => Minimal ? "2vh" : "5vh";
+
+    private string widthStyle => $"width: {blankSize};";
+    private string heightStyle => $"margin-bottom:{blankSize};";
+}

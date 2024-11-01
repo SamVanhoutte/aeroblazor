@@ -1,0 +1,21 @@
+@using Columbae
+@inject ILocationService LocationService
+@inject TranslatorService Translator
+@if (Location != null && !string.IsNullOrEmpty(distanceText))
+{
+    <MudText Align="Align.End" Typo="Typo.caption">@distanceText</MudText>
+}
+
+@code {
+    [Parameter] public Polypoint? Location { get; set; }
+
+    private string distanceText;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var distance = await LocationService.GetDistanceToAsync(Location);
+        distanceText = distance.PrintDistance(Translator, true);
+        await base.OnInitializedAsync();
+    }
+
+}

@@ -1,0 +1,293 @@
+@using Flurl
+@using Flurl.Http
+@using Microsoft.Extensions.Options
+@using Microsoft.Identity.Web
+@using Microsoft.IdentityModel.Protocols.OpenIdConnect
+@inject NavigationManager NavigationManager
+@inject ITokenStorageProvider TokenProvider
+@inject IOptions<MicrosoftIdentityOptions> AzureB2COptions
+@inject IAuthenticationManager AuthenticationManager
+<MudGrid>
+    <MudItem xs="2">
+        @if (AuthFlowType == AuthFlowType.Implicit)
+        {
+            <AeroButton Href="@GetImplicitLogin()">@SignInText</AeroButton>
+        }
+        else
+        {
+            <AeroButton Href="@GetAuthcodeLogin()">@SignInText</AeroButton>
+        }
+    </MudItem>
+        @if (AdminMode)
+        {
+            <MudItem xs="2">
+                <AeroButton Mode="AeroButton.ButtonMode.Subtle" IsLoading="tokensLoading" OnClick="@(async (e) => await LoadTokensAsync())">Show tokens</AeroButton>
+            </MudItem>
+            <MudItem xs="8">
+                @if (tokens != null)
+                {
+                    @foreach (var token in tokens)
+                    {
+                        <AeroLabel Name="@token.Name" Value="@token.Value" AllowCopy="true"/>
+                    }
+                }
+            </MudItem>
+            <MudItem xs="2" />
+            <MudItem xs="2">
+                <AeroButton Mode="AeroButton.ButtonMode.Subtle" IsLoading="claimsLoading" OnClick="@(async (e) => await LoadClaimsAsync())">Show claims</AeroButton>
+            </MudItem>
+            <MudItem xs="8">
+                @if (claims != null)
+                {
+                    @foreach (var claim in claims)
+                    {
+                        <AeroLabel Name="@claim.Key" Value="@claim.Value" AllowCopy="true"/>
+                    }
+                }
+            </MudItem>
+        }
+
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <MudItem xs="12">
+            <MudText Typo="Typo.body1" Color="Color.Error">@Error</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Error">@ErrorMessage</MudText>
+        </MudItem>
+    }
+    @if (SuccessfulAuthentication)
+    {
+        <MudItem xs="12">
+            <MudText Typo="Typo.body1" Color="Color.Success">Successfully authenticated</MudText>
+        </MudItem>
+    }
+</MudGrid>
+
+
+@code
+{
+    private bool SuccessfulAuthentication { get; set; } = false;
+    public string? Error { get; set; }
+    public string? ErrorMessage { get; set; }
+    private QueryParamCollection QueryParameters = new QueryParamCollection();
+
+    private string RedirectUri => NavigationManager.BaseUri.AppendPathSegment("admin");
+    private List<AuthToken> tokens;
+    private List<KeyValuePair<string, string>> claims;
+    private bool tokensLoading = false;
+    private bool claimsLoading = false;
+
+    [Parameter] public EventCallback<List<AuthToken>?> TokensReceived { get; set; }
+    [Parameter] public EventCallback<(string Error, string ErrorDescription)> ErrorReceived { get; set; }
+    [Parameter] public string SignInText { get; set; } = "Sign in";
+    [Parameter] public bool PersistTokens { get; set; }
+    [Parameter] public bool AdminMode { get; set; }
+    [Parameter] public AuthFlowType AuthFlowType { get; set; } = AuthFlowType.AuthorizationCode;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (QueryParameters.Any(qp => qp.Name.Equals("error")))
+        {
+            Error = GetQueryParam("error");
+            ErrorMessage = GetQueryParam("error_description");
+            await ErrorReceived.InvokeAsync((GetQueryParam("error") ?? "", GetQueryParam("error_description") ?? ""));
+        }
+
+        switch (AuthFlowType)
+        {
+            case AuthFlowType.Implicit:
+                await HandleImplicitResponseAsync();
+                break;
+            case AuthFlowType.AuthorizationCode:
+                await HandleAuthorizationCodeResponseAsync();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    private async Task HandleImplicitResponseAsync()
+    {
+        if (NavigationManager.Uri.Contains("#"))
+        {
+            QueryParameters = new Flurl.QueryParamCollection(NavigationManager.Uri.Split("#").Last());
+            if (QueryParameters.Any(qp => qp.Name.Equals("access_token")))
+            {
+                SuccessfulAuthentication = true;
+                var tokens = QueryParameters
+                    .Where(par => par.Value != null)
+                    .Select(par => new AuthToken(par.Name, par.Value!.ToString())).ToList();
+
+                // Expires at token is not included?  Then we add a calculated version of it
+                if (GetQueryParam("expires_at") == null)
+                {
+                    var expiresInValue = GetQueryParam("expires_in");
+                    if (int.TryParse(expiresInValue, out var secondsToExpiration))
+                    {
+                        tokens.Add(new AuthToken("expires_at", DateTimeOffset.UtcNow.AddSeconds(secondsToExpiration).ToString("O")));
+                    }
+                }
+
+                if (PersistTokens)
+                {
+                    await TokenProvider.PersistTokensAsync(tokens);
+                }
+
+                await TokensReceived.InvokeAsync(tokens);
+            }
+        }
+    }
+
+    private async Task HandleAuthorizationCodeResponseAsync()
+    {
+        QueryParameters = new Url(NavigationManager.Uri).QueryParams;
+        var code = GetQueryParam("code");
+        if (!string.IsNullOrEmpty(code))
+        {
+            var identityOptions = AzureB2COptions.Value;
+
+            // First step of the authorization code flow
+            var state = GetQueryParam("state");
+
+            var tenant = identityOptions.Domain!.Split('.').FirstOrDefault();
+            var webResponse = await $"https://{tenant}.b2clogin.com"
+                .AppendPathSegment(identityOptions.Domain)
+                .AppendPathSegment(identityOptions.SignUpSignInPolicyId)
+                .AppendPathSegment("oauth2/v2.0/token")
+                .AllowAnyHttpStatus()
+                .WithHeader("Content-Type", "application/x-www-form-urlencoded")
+                .PostUrlEncodedAsync(
+                    new
+                    {
+                        grant_type = "authorization_code",
+                        client_id = identityOptions.ClientId,
+                        client_secret = identityOptions.ClientSecret,
+                        scope = $"https://{identityOptions.Domain}/backend-api/Lock.OpenClose offline_access",
+                        code = code,
+                        redirect_uri = RedirectUri
+                    });
+            if (webResponse.StatusCode < 300)
+            {
+                var response = await webResponse.GetStringAsync();
+                var refreshTokenResponse = await webResponse.GetJsonAsync<AuthResponse>();
+                var expiresInValue = refreshTokenResponse.expires_in;
+                var expiresAt = DateTimeOffset.UtcNow + TimeSpan.FromSeconds(expiresInValue);
+                var tokens = new List<AuthToken>
+                {
+                    new()
+                    {
+                        Name = OpenIdConnectParameterNames.AccessToken,
+                        Value = refreshTokenResponse.access_token
+                    },
+                    new()
+                    {
+                        Name = OpenIdConnectParameterNames.RefreshToken,
+                        Value = refreshTokenResponse.refresh_token
+                    },
+                    new()
+                    {
+                        Name = "expires_at",
+                        Value = expiresAt.ToString("o")
+                    }
+                };
+                if (PersistTokens)
+                {
+                    await TokenProvider.PersistTokensAsync(tokens);
+                }
+
+                SuccessfulAuthentication = true;
+            }
+            else
+            {
+                Error = $"HTTP error {webResponse.StatusCode}";
+                ErrorMessage = await webResponse.GetStringAsync();
+            }
+        }
+
+        if (QueryParameters.Any(qp => qp.Name.Equals("access_token")))
+        {
+            SuccessfulAuthentication = true;
+            var tokens = QueryParameters
+                .Where(par => par.Value != null)
+                .Select(par => new AuthToken(par.Name, par.Value!.ToString())).ToList();
+
+            // Expires at token is not included?  Then we add a calculated version of it
+            if (GetQueryParam("expires_at") == null)
+            {
+                var expiresInValue = GetQueryParam("expires_in");
+                if (int.TryParse(expiresInValue, out var secondsToExpiration))
+                {
+                    tokens.Add(new AuthToken("expires_at", DateTimeOffset.UtcNow.AddSeconds(secondsToExpiration).ToString("O")));
+                }
+            }
+
+            if (PersistTokens)
+            {
+                await TokenProvider.PersistTokensAsync(tokens);
+            }
+
+            await TokensReceived.InvokeAsync(tokens);
+        }
+    }
+
+
+    private string? GetQueryParam(string paramName)
+    {
+        var param = QueryParameters.FirstOrDefault(p => p.Name == paramName);
+        return param.Value?.ToString();
+    }
+
+    private string GetImplicitLogin()
+    {
+        var identityOptions = AzureB2COptions.Value;
+        var tenant = identityOptions.Domain!.Split('.').FirstOrDefault();
+        var signinUrl = $"https://{tenant}.b2clogin.com"
+            .AppendPathSegment(identityOptions.Domain)
+            .AppendPathSegment("oauth2/v2.0/authorize")
+            .SetQueryParam("p", identityOptions.SignUpSignInPolicyId)
+            .SetQueryParam("client_id", identityOptions.ClientId)
+            .SetQueryParam("nonce", "defaultNonce")
+            .SetQueryParam("redirect_uri", RedirectUri)
+            .SetQueryParam("scope", $"openid https://{identityOptions.Domain}/backend-api/Lock.OpenClose")
+            .SetQueryParam("response_type", "id_token token")
+            .SetQueryParam("prompt", "login");
+        return signinUrl;
+    }
+
+    private string GetAuthcodeLogin()
+    {
+        var identityOptions = AzureB2COptions.Value;
+        var tenant = identityOptions.Domain!.Split('.').FirstOrDefault();
+        var signinUrl = $"https://{tenant}.b2clogin.com"
+            .AppendPathSegment(identityOptions.Domain)
+            .AppendPathSegment("oauth2/v2.0/authorize")
+            .SetQueryParam("p", identityOptions.SignUpSignInPolicyId)
+            .SetQueryParam("client_id", identityOptions.ClientId)
+            .SetQueryParam("nonce", "defaultNonce")
+            .SetQueryParam("redirect_uri", RedirectUri)
+            .SetQueryParam("scope", $"openid https://{identityOptions.Domain}/backend-api/Lock.OpenClose offline_access")
+            .SetQueryParam("response_type", "code")
+            .SetQueryParam("response_mode", "query")
+            .SetQueryParam("state", Guid.NewGuid().ToString("N"))
+            .SetQueryParam("prompt", "login");
+        return signinUrl;
+    }
+
+
+    private async Task LoadTokensAsync()
+    {
+        tokensLoading = true;
+        claims = null;
+        tokens = (await TokenProvider.GetTokensAsync()).ToList();
+        tokensLoading = false;
+    }
+
+    private async Task LoadClaimsAsync()
+    {
+        claimsLoading = true;
+        tokens = null;
+        var claimList = await AuthenticationManager.GetClaimsAsync();
+        claims = (claimList).ToList();
+        claimsLoading = false;
+    }
+}
+

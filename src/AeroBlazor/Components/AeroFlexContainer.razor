@@ -1,0 +1,72 @@
+@using MudBlazor.Utilities
+@inject IThemeManager ThemeManager
+
+<span style="@GetStyle()">
+    @ChildContent
+</span>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+ 
+    [Parameter]
+    public string? Style { get; set; }
+
+    [Parameter] 
+    public bool Stretch { get; set; } = false;
+    
+    [Parameter] 
+    public bool FullHeight { get; set; } = false;
+    [Parameter] 
+    public bool FullWidth { get; set; } = false;
+
+    [Parameter] 
+    public bool CenterAlign { get; set; } = false;
+
+    [Parameter] 
+    public bool RightAlign { get; set; } = false;
+    
+    [Parameter]
+    public MudColor? Background { get; set; }
+
+    [Parameter]
+    public string? Height { get; set; }
+    
+    private string GetStyle()
+    {
+        var style = "align-items: center; display: inline-block;display: flex;";
+        if (Stretch || CenterAlign)
+        {
+            style += CenterAlign? "width:100%; justify-content: center;": "justify-content: space-between;";
+        }
+        if (FullHeight)
+        {
+            style += "height: 100%;";
+        }
+        if (FullWidth)
+        {
+            style += "width: 100%;";
+        }
+        if (RightAlign)
+        {
+            style += "text-align: right;";
+        }
+        if (CenterAlign)
+        {
+            style += "text-align: center;";
+        }
+        if (!string.IsNullOrEmpty(Height))
+        {
+            style += $"height: {Height};";
+        }
+        if (Background != null)
+        {
+            style += $"background-color:{Background.Value};";
+        }
+        if (!string.IsNullOrWhiteSpace(Style))
+        {
+            style += Style;
+        }
+        return style;
+    }
+}

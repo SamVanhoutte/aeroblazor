@@ -1,0 +1,18 @@
+
+@inject IClipboardService ClipboardService
+@inject IThemeManager ThemeManager
+<MudButton OnClick="@(async () => await CopyLinkAsync())" Disabled="!AllowCopy">
+    <MudBarcode Value="@Link" Clickable="!AllowCopy" Color="@ForeColor" BackgroundColor="@BackgroundColor"/>
+</MudButton>
+@code {
+    [Parameter] public string Link { get; set; }
+    [Parameter] public bool AllowCopy { get; set; } = true;
+    private string BackgroundColor => ThemeManager.CurrentTheme.PaletteLight.BackgroundGray.Value;
+    private string ForeColor => ThemeManager.CurrentTheme.PaletteLight.Primary.Value;
+
+    private async Task CopyLinkAsync()
+    {
+        Console.WriteLine(Link);
+        await ClipboardService.CopyToClipboardAsync(Link);
+    }
+}

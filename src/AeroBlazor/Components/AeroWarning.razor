@@ -1,0 +1,8 @@
+<MudAlert Severity="@(Error ? Severity.Error : Severity.Warning)">@ChildContent</MudAlert>
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] public Typo Typo { get; set; } = Typo.h2;
+
+    [Parameter] public bool Error { get; set; } = false;
+}

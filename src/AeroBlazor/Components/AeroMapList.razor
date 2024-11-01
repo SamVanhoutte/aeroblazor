@@ -1,0 +1,106 @@
+@using GoogleMapsComponents.Maps
+@using GoogleMapsComponents
+@using Microsoft.Extensions.Options
+@using Microsoft.JSInterop
+@using MapOptions = AeroBlazor.Configuration.MapOptions
+@using Columbae
+@inject AeroMapService MapperService
+@inject IOptions<MapOptions> MapSettings
+@inject IJSRuntime JsRuntime
+@inject ILocationService LocationService
+
+@if (!string.IsNullOrEmpty(MapSettings?.Value?.GoogleMapKey))
+{
+    <div style='@($"height:{Height};")'>
+        <GoogleMap @ref="@_googleMap" Options="@mapOptions" Height="100%" OnAfterInit="@OnAfterInitAsync"></GoogleMap>
+    </div>
+}
+else
+{
+    <AeroWarning Error="true">The google maps API key is not configured.</AeroWarning>
+}
+@code 
+{
+    private List<MapMarker>? markers;
+
+    [Parameter]
+    public List<MapMarker>? Markers
+    {
+        get => markers;
+        set
+        {
+            Console.WriteLine("Update markers");
+            markers = value;
+        }
+    }
+
+    // [Parameter] public Polypoint? ZoomLocation { get; set; } = null;
+    [Parameter] public bool ZoomToLocation { get; set; } = false;
+    [Parameter] public string Height { get; set; } = "400px";
+    [Parameter] public EventCallback<List<MapMarker>?>? MarkersChanged { get; set; }
+    private GoogleMap? _googleMap;
+    private GoogleMapsComponents.Maps.MapOptions? mapOptions;
+    private bool MapInitialized = false;
+    private InfoWindow? _existingWindow = null;
+    private int retries = 0;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        mapOptions = await MapperService.GetLayoutAsync();
+    }
+
+    // protected override async Task OnParametersSetAsync()
+    // {
+    //     await InitializeMapAsync();
+    // }
+
+    private async Task OnAfterInitAsync()
+    {
+        await InitializeMapAsync();
+    }
+    
+    
+
+    private async Task InitializeMapAsync()
+    {
+        if (Markers != null)
+        {
+            try
+            {
+                Polypoint? zoomLocation = null;
+                if (ZoomToLocation)
+                {
+                    zoomLocation = await LocationService.GetLocationAsync();
+                }
+                await MapperService.ShowMarkersAsync(_googleMap, JsRuntime, markers , CheckMapRequirements(), HandlerMarkerClick, zoomLocation);
+                StateHasChanged();
+                MapInitialized = true;
+                retries = 0;
+            }
+            catch (Exception e)
+            {
+                if (retries++ < 3)
+                {
+                    await InitializeMapAsync();
+                }
+            }
+        }
+    }
+
+    private async void HandlerMarkerClick<MouseEvent>(MouseEvent e, string markerId)
+    {
+        if (_existingWindow != null)
+        {
+            await _existingWindow.Close();
+        }
+        _existingWindow = await MapperService.CreateInfoWindowAsync(Markers.First(l => l.Id.Equals(markerId)), JsRuntime);
+        await _existingWindow.Open(_googleMap.InteropObject);
+    }
+    
+    private MapLayout CheckMapRequirements()
+    {
+        var layout = new MapLayout { CenterMap = true, RedrawNeeded = false, ShowMarkers = true ,};
+        return layout;
+    }
+
+}

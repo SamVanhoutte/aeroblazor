@@ -1,0 +1,30 @@
+<AeroFlexContainer>
+    <MudSwitch T="@(bool?)" Label="@Label" ReadOnly="@ReadOnly" Color="Color.Secondary" ValueChanged="@(async(v) => await TriggerCheckedChangeAsync(v))" Value="@Value">@ChildContent</MudSwitch>
+    @if(!string.IsNullOrEmpty(HelperText)){
+        <AeroContextualHelp HelpText="@HelperText"></AeroContextualHelp>
+    }
+</AeroFlexContainer>
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public bool ReadOnly { get; set; } = false;
+
+    [Parameter]
+    public string? HelperText { get; set; }
+    
+    [Parameter]
+    public string? Label { get; set; }
+    
+    [Parameter]
+    public bool? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<bool?> ValueChanged { get; set; }
+
+    private async Task TriggerCheckedChangeAsync(bool? value)
+    {
+        await ValueChanged.InvokeAsync(value);
+    }
+}

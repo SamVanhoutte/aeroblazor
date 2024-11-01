@@ -1,0 +1,32 @@
+<MudGrid Spacing="1">
+    @foreach (var item in Items)
+    {
+        <MudItem xs="4" md="4">
+            <AeroSquareImageSelection Selected="@ShouldSelect(item.Item)" Label="@item.Label" ImageUrl="@item.ImageUrl" OnSelected="@(async _ => await OptionSelected(@item.Item))"/>
+        </MudItem>
+    }
+</MudGrid>
+
+@code {
+
+    [Parameter]
+    public IEnumerable<AeroSquareSelectionOption> Items { get; set; }
+
+    [Parameter]
+    public object? SelectedItem { get; set; }
+
+    [Parameter]
+    public EventCallback<object> OnSelectedItem { get; set; }
+    
+    private async Task OptionSelected(object item)
+    {
+        SelectedItem = item;
+        await OnSelectedItem.InvokeAsync((item));
+    }
+
+    private bool ShouldSelect(object item)
+    {
+        return SelectedItem?.Equals(item) ?? false;
+    }
+
+}

@@ -1,0 +1,50 @@
+<MudDialog>
+    <DialogContent>
+        <MudText>@ContentText</MudText>
+        @if (!string.IsNullOrEmpty(Href))
+        {
+            <AeroLabel Href="@Href" Value="@(HrefLabel ?? Href)" Target="_blank" />
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog {
+        get;
+        set;
+    }
+    [Parameter] public string ContentText {
+        get;
+        set;
+    }
+    [Parameter] public string ButtonText {
+        get;
+        set;
+    }
+
+    [Parameter] public string? Href {
+        get;
+        set;
+    }
+    
+    [Parameter] public string? HrefLabel {
+        get;
+        set;
+    }
+    public static DialogOptions StandardDialogOptions => new DialogOptions
+    {
+        CloseButton = true, CloseOnEscapeKey = true, FullWidth = true, FullScreen = false,
+    };
+    
+    public static DialogOptions BlurryDialogOptions => new DialogOptions
+    {
+        CloseButton = true, CloseOnEscapeKey = true, FullScreen = false, BackgroundClass = "blurry-background", MaxWidth = MaxWidth.Large
+    };
+    
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+    
+}
