@@ -15,7 +15,7 @@
 
     <ItemGroup>
         <PackageReference Include="Azure.Data.Tables" Version="12.9.1" />
-        <PackageReference Include="BlazorGoogleMaps" Version="4.7.12" />
+        <PackageReference Include="BlazorGoogleMaps" Version="4.7.14" />
         <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="7.0.1" />
         <PackageReference Include="Columbae" Version="2.3.0" />
         <PackageReference Include="Flurl.Http" Version="4.0.2" />
@@ -23,14 +23,11 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
         <PackageReference Include="Microsoft.Identity.Web" Version="3.2.0" />
         <PackageReference Include="MudBlazor" Version="7.4.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     </ItemGroup>
     <ItemGroup>
         <SupportedPlatform Include="browser"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
