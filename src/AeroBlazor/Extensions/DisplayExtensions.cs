@@ -6,44 +6,44 @@ namespace AeroBlazor.Extensions;
 
 public static class DisplayExtensions
 {
-    public static string PrintHistoricalTime(this DateTimeOffset? utcTimestamp, TranslatorService translatorService)
+    public static string PrintHistoricalTime(this DateTimeOffset? utcTimestamp, TranslatorService? translatorService=null)
     {
         if (!utcTimestamp.HasValue) return "-";
         return utcTimestamp.Value.PrintHistoricalTime(translatorService);
     }
 
-    public static string PrintHistoricalTime(this DateTimeOffset utcTimestamp, TranslatorService translatorService)
+    public static string PrintHistoricalTime(this DateTimeOffset utcTimestamp, TranslatorService? translatorService=null)
     {
         // TODO : pick time zone from current browser
         return utcTimestamp.DateTime.PrintHistoricalTime(translatorService);
     }
 
-    public static string PrintHistoricalTime(this DateTime utcTimestamp, TranslatorService translatorService)
+    public static string PrintHistoricalTime(this DateTime utcTimestamp, TranslatorService? translatorService=null)
     {
         var localTime = TimeZoneInfo.ConvertTime(utcTimestamp, TimeZoneInfo.Local);
         var currentDate = DateTime.UtcNow;
         if (currentDate <= utcTimestamp)
         {
-            return translatorService["time/now"];
+            return Translate(translatorService, "time/now", "Now");
         }
 
         var timeAgo = currentDate - utcTimestamp;
         // If less than a minute
         if (timeAgo < TimeSpan.FromMinutes(1))
         {
-            return string.Format(translatorService["time/secondsago"], timeAgo.Seconds);
+            return Translate(translatorService, "time/secondsago", "{0} seconds ago", timeAgo.Seconds);
         }
 
         // If less than an hour
         if (timeAgo < TimeSpan.FromHours(1))
         {
-            return string.Format(translatorService["time/minutesago"], timeAgo.Minutes);
+            return Translate(translatorService, "time/minutesago", "{0} minutes ago", timeAgo.Minutes);
         }
 
         // If today
         if (timeAgo < TimeSpan.FromHours(24) && currentDate.Day == utcTimestamp.Day)
         {
-            return $"{translatorService["time/today"]} {localTime:HH:mm}";
+            return $"{Translate(translatorService, "time/today", "Today")} {localTime:HH:mm}";
         }
 
         // If this week
@@ -56,8 +56,8 @@ public static class DisplayExtensions
         // Just time print
         return localTime.ToString("g");
     }
-    
-    public static string PrintHistoricalDate(this DateTime utcTimestamp, TranslatorService translatorService)
+
+    public static string PrintHistoricalDate(this DateTime utcTimestamp, TranslatorService? translatorService=null)
     {
         // Calculate the difference in days between the input date and today
         var localTime = TimeZoneInfo.ConvertTime(utcTimestamp, TimeZoneInfo.Local);
@@ -66,11 +66,11 @@ public static class DisplayExtensions
         // Determine the description based on the difference in days
         return daysDifference switch
         {
-            -1 => translatorService["time/now"],
-            0 => translatorService["Today"],
-            1 => translatorService["Tomorrow"],
-            _ when daysDifference < 0 => $"{Math.Abs(daysDifference)} {translatorService["days ago"]}",
-            _ => $"{string.Format( translatorService["in {0} days"],  daysDifference)}"
+            -1 => Translate(translatorService, "time/now", "Now"),
+            0 => Translate(translatorService, "Today"),
+            1 => Translate(translatorService, "Tomorrow"),
+            _ when daysDifference < 0 => $"{Math.Abs(daysDifference)} {Translate(translatorService, "days ago")}",
+            _ => $"{string.Format(Translate(translatorService, "in {0} days", value: daysDifference))}"
         };
     }
 
@@ -87,7 +87,7 @@ public static class DisplayExtensions
         var format = shortFormat ? "d" : "D";
         return utcTimestamp.Value.ToString(format);
     }
-    
+
     public static string PrintNumber(this double value, string? suffix = null)
     {
         return $"{value:N2}{suffix}";
@@ -125,13 +125,26 @@ public static class DisplayExtensions
         if (parts.Length == 1) return fullText.First().ToString().ToUpper();
         return $"{parts.First().First()}{parts.Last().First()}".ToUpper();
     }
-    
-    public static string PrintDistance(this double distanceInMeter, TranslatorService localizer, bool includeDistanceSymbol = false)
+
+    public static string PrintDistance(this double distanceInMeter, TranslatorService? translatorService,
+        bool includeDistanceSymbol = false)
     {
         var distanceSymbol = includeDistanceSymbol ? "" : " ↔";
         if (distanceInMeter < 0) return "";
-        if(distanceInMeter < 50) return $"{localizer["Nearby"]}{distanceSymbol}";
-        if(distanceInMeter < 1000) return $"{distanceInMeter:0}m{distanceSymbol}";
+        if (distanceInMeter < 50) return $"{Translate(translatorService, "Nearby")}{distanceSymbol}";
+        if (distanceInMeter < 1000) return $"{distanceInMeter:0}m{distanceSymbol}";
         return $"{distanceInMeter / 1000:0.0}km{distanceSymbol}";
+    }
+
+    private static string Translate(this TranslatorService? translatorService, string key, string? defaultValue = null,
+        object? value = null)
+    {
+        defaultValue ??= key;
+        if (translatorService == null)
+        {
+            return value == null ? defaultValue : string.Format(defaultValue, value);
+        }
+
+        return value == null ? translatorService[key] : string.Format(translatorService[key], value);
     }
 }
