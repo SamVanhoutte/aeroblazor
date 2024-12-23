@@ -1,0 +1,33 @@
+<div class="d-flex">
+    @if (Result?.HasRun ?? false)
+    {
+        <MudIcon Icon="@(Result.Success ? Icons.Material.Filled.Check : Icons.Material.Filled.Error)" Color="@IconColor" class="mr-3"></MudIcon>
+        <MudText Typo="Typo.body2">@Result.Result</MudText>        
+    }
+    else
+    {
+        @if (IsRunning)
+        {
+            <AeroLoader Small="true" WaitingMessage="@Text" />
+        }
+        else
+        {
+            <MudText Typo="Typo.body1">@Text</MudText>        
+        }
+    }
+</div>
+@code {
+    [Parameter] public bool IsRunning { get; set; }
+    [Parameter] public string Text { get; set; }
+    [Parameter] public StepResult Result { get; set; }
+
+    public class StepResult
+    {
+        public bool HasRun { get; set; }
+        public bool Success { get; set; }
+        public bool Warning { get; set; }
+        public string Result { get; set; }
+    }
+
+    private Color IconColor => Result.Warning ? Color.Warning : Result.Success ? Color.Success : Color.Error;
+}

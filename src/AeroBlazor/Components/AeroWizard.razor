@@ -1,0 +1,61 @@
+<CascadingValue Value="this">
+    <MudExpansionPanels>
+        @foreach (AeroWizardStep step in Steps)
+        {
+            <MudExpansionPanel Disabled="@(ActiveStep.StepId < step.StepId)">
+                <TitleContent>
+                    @if (ActiveStep.StepId == step.StepId)
+                    {
+                        <AeroLoader Small="true"></AeroLoader>
+                    }
+                    @if (ActiveStep.StepId > step.StepId)
+                    {
+                        <div class="d-flex">
+                            <MudIcon Icon="@Icons.Material.Filled.Check" class="mr-3"></MudIcon>
+                            <MudText>Success</MudText>
+                        </div>
+                    }
+                </TitleContent>
+                <ChildContent>
+                    @if (ActiveStep.StepId == step.StepId)
+                    {
+                        @ChildContent
+                    }
+                    @if (StepTextTemplate != null)
+                    {
+                        @StepTextTemplate(step)
+                    }
+                </ChildContent>
+            </MudExpansionPanel>
+        }
+    </MudExpansionPanels>
+    @ChildContent
+</CascadingValue>
+
+@code {
+    // Next line is needed so we are able to add <InteractiveWizardStep> components inside
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment<AeroWizardStep> StepTextTemplate { get; set; }
+
+    [Parameter]
+    public int ActiveStepId { get; set; }
+    
+    public AeroWizardStep ActiveStep { get; set; }
+    List<AeroWizardStep> Steps = new List<AeroWizardStep>();
+
+    internal void AddStep(AeroWizardStep step)
+    {
+        Steps.Add(step);
+        if (Steps.Count == 1)
+            ActiveStep = step;
+        StateHasChanged();
+    }
+
+    void ActivateStep(AeroWizardStep page)
+    {
+        ActiveStep = page;
+    }
+}
