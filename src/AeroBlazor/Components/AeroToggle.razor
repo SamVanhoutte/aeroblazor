@@ -1,5 +1,5 @@
 <AeroFlexContainer>
-    <MudSwitch T="bool" Label="@Label" ReadOnly="@ReadOnly" Color="Color.Secondary" ValueChanged="@(async(v) => await TriggerCheckedChangeAsync(v))" Value="@Value">@ChildContent</MudSwitch>
+    <MudSwitch T="bool" Label="@Label" ReadOnly="@ReadOnly" Color="Color.Secondary" ValueChanged="@(async(v) => await TriggerCheckedChangeAsync(v))" Value="@Value" @attributes="AdditionalAttributes">@ChildContent</MudSwitch>
     @if(!string.IsNullOrEmpty(HelperText)){
         <AeroContextualHelp HelpText="@HelperText"></AeroContextualHelp>
     }
@@ -21,8 +21,11 @@
     public bool Value { get; set; }
 
     [Parameter]
-    public EventCallback<bool?> ValueChanged { get; set; }
+    public EventCallback<bool> ValueChanged { get; set; }
 
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; }
+    
     private async Task TriggerCheckedChangeAsync(bool value)
     {
         await ValueChanged.InvokeAsync(value);
