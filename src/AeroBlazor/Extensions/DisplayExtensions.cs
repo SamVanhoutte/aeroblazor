@@ -66,7 +66,7 @@ public static class DisplayExtensions
         // Determine the description based on the difference in days
         return daysDifference switch
         {
-            -1 => Translate(translatorService, "time/now", "Now"),
+            -1 => Translate(translatorService, "Yesterday", "Yesterday"),
             0 => Translate(translatorService, "Today"),
             1 => Translate(translatorService, "Tomorrow"),
             _ when daysDifference < 0 => $"{Math.Abs(daysDifference)} {Translate(translatorService, "days ago")}",
