@@ -1,0 +1,45 @@
+<MudDialog>
+    <DialogContent>
+        <AeroSubtitle>@Title</AeroSubtitle>
+        <div style="width: @Width">
+            @ChildContent
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <AeroButton OnClick="@(async() => await CancelAsync())">Cancel</AeroButton>
+        <AeroButton Color="Color.Success" IsLoading="@executingAction" Variant="Variant.Filled" OnClick="@(async() => await SubmitAsync())">@ButtonText</AeroButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? ButtonText { get; set; } = "OK";
+    [Parameter] public EventCallback Submitted { get; set; }
+    [Parameter] public EventCallback Canceled { get; set; }
+    [Parameter] public string? Width { get; set; } = "400px";
+    private bool executingAction = false;
+
+    private async Task SubmitAsync()
+    {
+        try
+        {
+            executingAction = true;
+            await Submitted.InvokeAsync();
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        finally
+        {
+            executingAction = false;
+        }
+    }
+
+    private async Task CancelAsync()
+    {
+        await Submitted.InvokeAsync();
+        MudDialog.Cancel();
+    }
+
+}
