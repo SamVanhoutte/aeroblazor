@@ -1,11 +1,17 @@
+@inject IThemeManager ThemeManager
 <AeroFlexContainer>
-    <MudIcon Icon="@Icon" Color="Color" Style="margin-right: 10px;" Size="Size.Small"/>
+    @if(!string.IsNullOrEmpty( IconToShow))
+    {
+        <MudIcon Icon="@IconToShow" Color="Color" Style="margin-right: 10px;" Size="Size.Small"/>
+    }
     <MudText Typo="@Typo" Color="Color">@ChildContent</MudText>
 </AeroFlexContainer>
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
-    [Parameter] public string Icon { get; set; } = Icons.Material.Filled.Diamond;
+    [Parameter] public string? Icon { get; set; }
+    
+    private string? IconToShow => Icon ?? ThemeManager.SubtitleIcon;
 
     [Parameter] public Typo Typo { get; set; } = Typo.subtitle1;
     [Parameter] public Color Color { get; set; } = Color.Secondary;

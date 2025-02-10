@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <Authors>Sam Vanhoutte</Authors>
@@ -11,6 +10,7 @@
         <RepositoryType>github</RepositoryType>
         <PackageReleaseNotes>Initial version</PackageReleaseNotes>
         <Version>1.1.0</Version>
+        <TargetFramework>net9.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,10 +18,9 @@
         <PackageReference Include="BlazorGoogleMaps" Version="4.7.14" />
         <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="7.0.1" />
         <PackageReference Include="Columbae" Version="2.3.0" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.1" />
         <PackageReference Include="Flurl.Http" Version="4.0.2" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.8" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
-        <PackageReference Include="Microsoft.Identity.Web" Version="3.2.0" />
         <PackageReference Include="MudBlazor" Version="7.4.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="System.Linq.Async" Version="6.0.1" />

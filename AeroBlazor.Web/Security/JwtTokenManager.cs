@@ -1,13 +1,14 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using AeroBlazor.Caching;
+using AeroBlazor.Security;
 using Flurl;
 using Flurl.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
-namespace AeroBlazor.Security;
+namespace AeroBlazor.Web.Security;
 
 public class AzureB2CTokenManager (IOptions<MicrosoftIdentityOptions> identityOptions, ITokenStorageProvider tokenStorageProvider): IAuthenticationManager
 {

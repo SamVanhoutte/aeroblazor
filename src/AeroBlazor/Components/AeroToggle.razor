@@ -1,3 +1,4 @@
+@using MudBlazor.Components
 <AeroFlexContainer>
     <MudSwitch T="bool" Label="@Label" ReadOnly="@ReadOnly" Color="Color.Secondary" ValueChanged="@(async(v) => await TriggerCheckedChangeAsync(v))" Value="@Value" @attributes="AdditionalAttributes">@ChildContent</MudSwitch>
     @if(!string.IsNullOrEmpty(HelperText)){
