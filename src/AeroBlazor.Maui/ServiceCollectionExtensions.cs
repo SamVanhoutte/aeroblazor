@@ -4,30 +4,13 @@ using AeroBlazor.Services;
 using AeroBlazor.Services.Maps;
 using AeroBlazor.Theming;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Localization;
 using MudExtensions.Services;
 using MapOptions = AeroBlazor.Configuration.MapOptions;
 
-namespace AeroBlazor;
+namespace AeroBlazor.Maui;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddAeroBlazorServices<TThemeManager>(this IServiceCollection services,
-        Action<AeroStartupOptions>? configureRuntime = null) where TThemeManager : class, IThemeManager
-    {
-        services.AddLocalization(options => { options.ResourcesPath = "Languages"; });
-        services.AddScoped<IClipboardService, WebClipboardService>();
-        services.AddScoped<ICrashReportHandler, EmptyCrashReportHandler>();
-        services.AddScoped<IAlertNotifier, WebAlertNotifier>();
-        services.AddScoped<IThemeManager, TThemeManager>();
-        if (configureRuntime != null)
-        {
-            ConfigureOptions(services, configureRuntime);
-        }
-
-        return services;
-    }
-
     public static IServiceCollection AddAeroAppServices<TThemeManager>(this IServiceCollection services,
         Action<AeroStartupOptions>? configureRuntime = null) where TThemeManager : class, IThemeManager
     {
@@ -47,7 +30,6 @@ public static class ServiceCollectionExtensions
     private static AeroStartupOptions ConfigureOptions(IServiceCollection services,
         Action<AeroStartupOptions> configureRuntime)
     {
-        Console.WriteLine("Configuring AeroBlazor options");
         var options = AeroStartupOptions.Default;
         configureRuntime(options);
         if (options.InjectHttpClient)
@@ -60,7 +42,10 @@ public static class ServiceCollectionExtensions
 
         if (options.EnableGoogleMaps)
         {
-            services.Configure<MapOptions>(o => { o.GoogleMapKey = options.GoogleMapsConfiguration!.GoogleMapKey; });
+            services.Configure<MapOptions>(o =>
+            {
+                o.GoogleMapKey = options.GoogleMapsConfiguration!.GoogleMapKey;
+            });
             services.AddScoped<AeroMapService, AeroMapService>();
         }
 
@@ -68,20 +53,6 @@ public static class ServiceCollectionExtensions
         {
             services.AddScoped<ILocationService, WebLocationService>();
         }
-
-        // Register the composite localizer
-        services.AddSingleton<IStringLocalizer>(sp =>
-        {
-            var factory = sp.GetRequiredService<IStringLocalizerFactory>();
-            var localizer = new AeroStringLocalizer(factory);
-            if (!string.IsNullOrEmpty(options.LanguageResourceName))
-            {
-                localizer.AddLocalizer(options.LanguageResourceName, options.LanguageAssemblyName);
-            }
-
-            return localizer;
-        });
-
         var behaviorOptions = options.BehaviorOptions ?? AeroBehaviorOptions.Default;
         services.Configure<AeroBehaviorOptions>(o => o = behaviorOptions);
         return options;

@@ -1,0 +1,35 @@
+@inject IClipboardService ClipboardService
+
+@if (!string.IsNullOrEmpty(Name))
+{
+    <MudText Typo="Typo.caption" Color="TextColor">@Name</MudText>
+}
+@if (Value != null)
+{
+    <AeroFlexContainer CenterAlign="@CenterAlign">
+        <MudText Color="@TextColor" Typo="Typo.body1">@Value</MudText>
+    </AeroFlexContainer>
+    @if (ComparingValue != null)
+    {
+        <AeroFlexContainer CenterAlign="@CenterAlign">
+            <MudText Color="@Color.Info" Typo="Typo.body2">(@ComparingValue)</MudText>
+        </AeroFlexContainer>
+    }
+}
+else
+{
+    <MudSkeleton/>
+}
+
+@code {
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public string? ComparingValue { get; set; }
+    [Parameter] public bool Large { get; set; } = false;
+    [Parameter] public bool Light { get; set; } = false;
+    [Parameter] public bool CenterAlign { get; set; } = true;
+    [Parameter] public Color? ForeColor { get; set; }
+
+    private Color TextColor => ForeColor ?? (Light ? Color.Info : Color.Primary);
+
+}

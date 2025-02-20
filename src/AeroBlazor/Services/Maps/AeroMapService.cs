@@ -11,7 +11,6 @@ using MapOptions = AeroBlazor.Configuration.MapOptions;
 namespace AeroBlazor.Services.Maps;
 
 public class AeroMapService(
-    TranslatorService service,
     IOptions<MapOptions> mapSettings)
 {
     private readonly MapOptions mapOptions = mapSettings.Value;
