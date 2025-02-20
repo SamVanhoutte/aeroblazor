@@ -1,7 +1,7 @@
 <AeroFlexContainer>
-    <MudSlider Color="Color.Secondary" T="int" Disabled="ReadOnly" Value="@Value" ValueChanged="@(async (v) => await TriggerValueChangeAsync(v))" Min="@Min" Max="@Max" Step="@Step" Size="@Size" Variant="Variant.Filled" ValueLabel="true">
+    <MudSlider Color="Color.Secondary" T="int" Disabled="ReadOnly" Value="@Value" ValueChanged="@(async (v) => await TriggerValueChangeAsync(v))" Min="@Min" Max="@Max" Step="@Step" Size="@Size" Variant="Variant.Filled" ValueLabel="@ValueLabel">
         <AeroFlexContainer CenterAlign="true" FullWidth="true">
-        <MudText Typo="Typo.caption" Align="Align.Center">@printLabel</MudText>
+            <MudText Typo="Typo.caption" Align="Align.Center">@printLabel</MudText>
         </AeroFlexContainer>
     </MudSlider>
     @if (!string.IsNullOrEmpty(HelperText))
@@ -20,6 +20,7 @@
     [Parameter]
     public string? HelperText { get; set; }
 
+    [Parameter] public bool ValueLabel { get; set; } = true;
     [Parameter] public int Min { get; set; } = 0;
     [Parameter] public int Max { get; set; } = 100;
     [Parameter] public int Step { get; set; } = 1;
@@ -34,10 +35,12 @@
         set
         {
             this.value = value;
+            ApplyLabel();
         }
     }
     [Parameter]
     public EventCallback<int> ValueChanged { get; set; }
+
 
     protected override void OnInitialized()
     {

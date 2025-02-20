@@ -32,6 +32,18 @@
     <ItemGroup>
       <Content Remove="StaticData\defaultmapstyle.json" />
       <EmbeddedResource Include="StaticData\defaultmapstyle.json" />
+      <EmbeddedResource Update="Languages\StandardLanguage.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>StandardLanguage.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Languages\StandardLanguage.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>StandardLanguage.en.resx</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

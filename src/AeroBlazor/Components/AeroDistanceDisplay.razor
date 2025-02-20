@@ -1,6 +1,5 @@
 @using Columbae
 @inject ILocationService LocationService
-@inject TranslatorService Translator
 @if (Location != null && !string.IsNullOrEmpty(distanceText))
 {
     <MudText Align="Align.End" Typo="Typo.caption">@distanceText</MudText>

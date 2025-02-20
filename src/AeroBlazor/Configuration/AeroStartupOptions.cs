@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace AeroBlazor.Configuration;
 
 public class AeroStartupOptions
@@ -5,10 +7,12 @@ public class AeroStartupOptions
     public static AeroStartupOptions Default => new AeroStartupOptions();
     
     public TableStorageOptions? TableStorageConfiguration;
-    internal MapOptions? GoogleMapsConfiguration;
+    public MapOptions? GoogleMapsConfiguration;
     public bool EnableGoogleMaps = false;
     public bool InjectHttpClient { get; set; } = true;
     public bool EnableLocationServices { get; set; } = true;
+    public string? LanguageResourceName { get; set; }
+    public string? LanguageAssemblyName { get; set; }
     public AeroBehaviorOptions? BehaviorOptions { get; set; }
 
     public void ConfigureMaps(MapOptions? options)
@@ -17,4 +21,10 @@ public class AeroStartupOptions
         GoogleMapsConfiguration = options;
     }
     
+    public void SetLanguage(string languageResourceName, Assembly? assembly = null)
+    {
+        LanguageResourceName = languageResourceName;
+        LanguageAssemblyName = assembly?.FullName;
+    }
+
 }

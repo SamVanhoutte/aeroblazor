@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\AeroBlazor\AeroBlazor.csproj" />
+      <ProjectReference Include="..\AeroBlazor\AeroBlazor.csproj" />
     </ItemGroup>
 
 </Project>

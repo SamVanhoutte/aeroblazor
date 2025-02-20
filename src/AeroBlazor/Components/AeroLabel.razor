@@ -2,13 +2,15 @@
 
 @if (!string.IsNullOrEmpty(Name))
 {
-    <MudText Typo="Typo.caption" Color="TextColor">@Name</MudText>
+    <AeroFlexContainer CenterAlign="@CenterAlign">
+        <MudText Typo="Typo.caption" Color="TextColor">@Name</MudText>
+    </AeroFlexContainer>
 }
 @if (Value != null)
 {
     @if (string.IsNullOrEmpty(Href))
     {
-        <AeroFlexContainer>
+        <AeroFlexContainer CenterAlign="@CenterAlign">
             <MudText Color="@TextColor" Typo="Typo.body1">@ValueToShow</MudText>
             @if (AllowCopy)
             {
@@ -19,7 +21,7 @@
     }
     else
     {
-        <AeroFlexContainer>
+        <AeroFlexContainer CenterAlign="@CenterAlign">
             <MudLink Color="@TextColor" Href="@Href" Target="@HrefTarget" Underline="Underline.Always"
                      Typo="Typo.body1">@ValueToShow</MudLink>
             @if (AllowCopy)
@@ -45,6 +47,7 @@ else
     [Parameter] public bool Large { get; set; } = false;
     [Parameter] public string? Target { get; set; }
     [Parameter] public bool Light { get; set; } = false;
+    [Parameter] public bool CenterAlign { get; set; } = false;
     [Parameter] public Color? ForeColor { get; set; }
 
     private string HrefTarget => Target ?? "_self";

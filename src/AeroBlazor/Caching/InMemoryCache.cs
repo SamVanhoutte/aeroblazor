@@ -2,7 +2,7 @@ using AeroBlazor.Extensions;
 
 namespace AeroBlazor.Caching;
 
-public class InMemoryCache<TKey, TValue>
+public class InMemoryCache<TKey, TValue> : IApplicationCache<TKey, TValue>
 {
     private IDictionary<string, CachedItem<TValue>> memoryCache = new Dictionary<string, CachedItem<TValue>>();
     private TimeSpan defaultCacheDuration;

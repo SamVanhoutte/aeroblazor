@@ -29,8 +29,14 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddAeroAppServices(this IServiceCollection services,
         Action<AeroStartupOptions>? configureRuntime = null)
     {
+        services.AddAeroAppServices<StandardLanguage>(configureRuntime);
+        return services;
+    }
+    
+    public static IServiceCollection AddAeroAppServices<TLanguageResources>(this IServiceCollection services,
+        Action<AeroStartupOptions>? configureRuntime = null)
+    {
         services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
-        services.AddScoped<TranslatorService>();
         services.AddHttpContextAccessor();
         services.AddScoped<IClipboardService, WebClipboardService>();
         services.AddScoped<ICrashReportHandler, EmptyCrashReportHandler>();
