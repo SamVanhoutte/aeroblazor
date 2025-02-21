@@ -12,11 +12,13 @@ public static class RenderFragmentExtensions
         {
             return null;
         }
+
         var builder = new RenderTreeBuilder();
         renderFragment.Invoke(builder);
-        return builder.GetFrames().Array
-            .OfType<RenderTreeFrame>()
-            .FirstOrDefault(f => f.FrameType == RenderTreeFrameType.Text).TextContent;
-
+        var frames = builder.GetFrames().Array
+            .OfType<RenderTreeFrame>();
+        var parsedContent = frames.FirstOrDefault(f => f.FrameType == RenderTreeFrameType.Text || f.FrameType== RenderTreeFrameType.Markup);
+        var result = parsedContent.TextContent;
+        return result;
     }
 }
