@@ -20,10 +20,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICrashReportHandler, EmptyCrashReportHandler>();
         services.AddScoped<IAlertNotifier, WebAlertNotifier>();
         services.AddScoped<IThemeManager, TThemeManager>();
-        if (configureRuntime != null)
-        {
-            ConfigureOptions(services, configureRuntime);
-        }
+        ConfigureOptions(services, configureRuntime);
 
         return services;
     }
@@ -36,10 +33,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICrashReportHandler, EmptyCrashReportHandler>();
         services.AddScoped<IAlertNotifier, WebAlertNotifier>();
         services.AddScoped<IThemeManager, TThemeManager>();
-        if (configureRuntime != null)
-        {
-            ConfigureOptions(services, configureRuntime);
-        }
+        ConfigureOptions(services, configureRuntime);
 
         return services;
     }
@@ -49,15 +43,19 @@ public static class ServiceCollectionExtensions
     {
         Console.WriteLine("Configuring AeroBlazor options");
         var options = AeroStartupOptions.Default;
-        configureRuntime(options);
+        if (configureRuntime != null)
+        {
+            configureRuntime(options);
+        }
+
         if (options.InjectHttpClient)
         {
             services.AddHttpClient();
         }
 
         services.AddMudExtensions();
-
-
+        services.AddSingleton<Localizer>();
+        
         if (options.EnableGoogleMaps)
         {
             services.Configure<MapOptions>(o => { o.GoogleMapKey = options.GoogleMapsConfiguration!.GoogleMapKey; });

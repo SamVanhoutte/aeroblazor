@@ -11,7 +11,7 @@
             {
                 <MudIcon Icon="@item.Icon" Color="@(item.Tertiary ? Color.Success : Color.Secondary)"/>
             }
-            <MudLink Href="@(item.Href)" Color="@(item.Tertiary ? Color.Success : Color.Secondary)" Typo="Typo.caption">@(item.Label)</MudLink>
+            <MudLink Href="@(item.Href)" Color="@(item.Tertiary ? Color.Success : Color.Secondary)" Typo="Typo.caption">@(Localizer[item.Label])</MudLink>
         }
     </AeroFlexContainer>
 </nav>

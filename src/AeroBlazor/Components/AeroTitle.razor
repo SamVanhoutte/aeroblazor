@@ -5,7 +5,7 @@
     {
         <MudIcon Icon="@IconToShow" Color="Color" Style="margin-right: 10px;" Size="Size.Small"/>
     }
-    <MudText Typo="@Typo" Color="Color">@ChildContent</MudText>
+    <MudText Typo="@Typo" Color="Color">@Localizer[titleText]</MudText>
 </AeroFlexContainer>
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
@@ -16,4 +16,12 @@
 
     [Parameter] public Typo Typo { get; set; } = Typo.h1;
     [Parameter] public Color Color { get; set; } = Color.Tertiary;
+    
+    private string? titleText;
+    
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        titleText = ChildContent.GetText();
+    }
 }

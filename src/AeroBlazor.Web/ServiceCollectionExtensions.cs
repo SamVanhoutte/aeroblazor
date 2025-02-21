@@ -4,6 +4,7 @@ using AeroBlazor.Services;
 using AeroBlazor.Services.Maps;
 using AeroBlazor.Theming;
 using AeroBlazor.Web.Configuration;
+using AeroBlazor.Web.Identity;
 using AeroBlazor.Web.Security;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Web;
@@ -54,42 +55,54 @@ public static class ServiceCollectionExtensions
     {
         var options = AeroWebOptions.Default;
         configureRuntime(options);
-        if (options.EnableAuthentication)
+        if(options.AuthenticationType!=null)
         {
-            services.Configure<MicrosoftIdentityOptions>(o =>
+            switch (options.AuthenticationType.Value)
             {
-                o.Domain = options.IdentityOptions!.Domain;
-                o.Instance = options.IdentityOptions!.Instance;
-                o.TenantId = options.IdentityOptions!.TenantId;
-                o.ClientSecret = options.IdentityOptions!.ClientSecret;
-                o.ClientId = options.IdentityOptions!.ClientId;
-                o.SignUpSignInPolicyId = options.IdentityOptions!.SignUpSignInPolicyId;
-            });
+                case AuthenticationType.Auth0:
+                    services.AddScoped<IUserProfileService, Auth0UserProfileService>();
+                    break;
+                case AuthenticationType.EntraId:
+                    services.Configure<MicrosoftIdentityOptions>(o =>
+                    {
+                        o.Domain = options.IdentityOptions!.Domain;
+                        o.Instance = options.IdentityOptions!.Instance;
+                        o.TenantId = options.IdentityOptions!.TenantId;
+                        o.ClientSecret = options.IdentityOptions!.ClientSecret;
+                        o.ClientId = options.IdentityOptions!.ClientId;
+                        o.SignUpSignInPolicyId = options.IdentityOptions!.SignUpSignInPolicyId;
+                    });
             
-            services.AddSingleton<IAuthenticationManager, AzureB2CTokenManager>();
-            if (options.PersistAuthenticationInTableStorage)
-            {
-                if (string.IsNullOrEmpty(options?.TableStorageConfiguration?.StorageAccount))
-                {
-                    throw new NullReferenceException("The TableStorage Configuration options are empty");
-                }
+                    services.AddSingleton<IAuthenticationManager, AzureB2CTokenManager>();
+                    if (options.PersistAuthenticationInTableStorage)
+                    {
+                        if (string.IsNullOrEmpty(options?.TableStorageConfiguration?.StorageAccount))
+                        {
+                            throw new NullReferenceException("The TableStorage Configuration options are empty");
+                        }
 
-                services.Configure<TableStorageOptions>(o =>
-                {
-                    o.StorageAccount = options.TableStorageConfiguration!.StorageAccount;
-                    o.ClientName = options.TableStorageConfiguration!.ClientName;
-                    o.StorageAccountKey = options.TableStorageConfiguration!.StorageAccountKey;
-                    o.AuthTableName = options.TableStorageConfiguration!.AuthTableName;
-                });
-                services.AddSingleton<ITokenStorageProvider, TableStorageProviderTokenProvider>();
-            }
+                        services.Configure<TableStorageOptions>(o =>
+                        {
+                            o.StorageAccount = options.TableStorageConfiguration!.StorageAccount;
+                            o.ClientName = options.TableStorageConfiguration!.ClientName;
+                            o.StorageAccountKey = options.TableStorageConfiguration!.StorageAccountKey;
+                            o.AuthTableName = options.TableStorageConfiguration!.AuthTableName;
+                        });
+                        services.AddSingleton<ITokenStorageProvider, TableStorageProviderTokenProvider>();
+                    }
 
-            if (options.PersistAuthenticationLocally ?? false)
-            {
-                services.AddSingleton<ITokenStorageProvider, ProtectedLocalStorageProviderTokenStorageProvider>();
+                    if (options.PersistAuthenticationLocally ?? false)
+                    {
+                        services.AddSingleton<ITokenStorageProvider, ProtectedLocalStorageProviderTokenStorageProvider>();
+                    }
+
+                    break;
+                default:
+                    break;
             }
         }
 
+        services.AddSingleton<AeroStartupOptions>(options);
         return options;
     }
 }

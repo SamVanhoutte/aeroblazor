@@ -1,3 +1,5 @@
+@using Microsoft.AspNetCore.Components.Rendering
+@using Microsoft.AspNetCore.Components.RenderTree
 @inherits MudButton
 
 <MudElement @bind-Ref="@_elementReference"
@@ -21,11 +23,11 @@
         @if (IsLoading)
         {
             <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
-            <MudText Class="ms-2">@(LoadingText ?? "Processing")</MudText>
+            <MudText Class="ms-2">@(Localizer[ LoadingText ?? "Processing"])</MudText>
         }
         else
         {
-            <MudText>@ChildContent</MudText>
+            <MudText>@Localizer[buttonText]</MudText>
         }
 
         @if (!string.IsNullOrWhiteSpace(@EndIcon))
@@ -39,18 +41,15 @@
 </MudElement>
 
 @code {
-   
-    [Parameter]
-    public bool IsLoading { get; set; }
-    
-    [Parameter]
-    public ButtonMode Mode { get; set; } = ButtonMode.Default;
-    
-    [Parameter]
-    public string? LoadingText { get; set; }
+
+    [Parameter] public bool IsLoading { get; set; }
+
+    [Parameter] public ButtonMode Mode { get; set; } = ButtonMode.Default;
+
+    [Parameter] public string? LoadingText { get; set; }
 
     private bool shouldDisable => Disabled || IsLoading;
-
+    private string? buttonText;
     protected override void OnParametersSet()
     {
         // Set defaults first
@@ -70,11 +69,15 @@
             default:
                 break;
         }
-        if(baseColor!= Color.Default){
+
+        if (baseColor != Color.Default)
+        {
             Color = baseColor;
         }
+
         Class = Class + " rounded-xl";
         base.OnParametersSet();
+        buttonText = ChildContent.GetText();
     }
 
     public enum ButtonMode
@@ -83,5 +86,6 @@
         Subtle = 1,
         Warning = 2
     }
+
 }
 

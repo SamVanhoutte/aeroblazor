@@ -13,7 +13,7 @@
     @* <MudProgressCircular Color="Color.Success" Indeterminate="true" Class="my-7"/> *@
     @if (!string.IsNullOrEmpty(WaitingMessage))
     {
-        <MudText Style="margin-left: 10px;">@WaitingMessage</MudText>
+        <MudText Style="margin-left: 10px;">@Localizer[WaitingMessage]</MudText>
     }
 </AeroFlexContainer>
 @code {

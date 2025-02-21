@@ -1,6 +1,6 @@
 @using MudBlazor.Components
 <AeroFlexContainer>
-    <MudSwitch T="bool" Label="@Label" ReadOnly="@ReadOnly" Color="Color.Secondary" ValueChanged="@(async(v) => await TriggerCheckedChangeAsync(v))" Value="@Value" @attributes="AdditionalAttributes">@ChildContent</MudSwitch>
+    <MudSwitch T="bool" Label="@Localizer[Label]" ReadOnly="@ReadOnly" Color="Color.Secondary" ValueChanged="@(async(v) => await TriggerCheckedChangeAsync(v))" Value="@Value" @attributes="AdditionalAttributes">@Localizer[labelText]</MudSwitch>
     @if(!string.IsNullOrEmpty(HelperText)){
         <AeroContextualHelp HelpText="@HelperText"></AeroContextualHelp>
     }
@@ -30,5 +30,13 @@
     private async Task TriggerCheckedChangeAsync(bool value)
     {
         await ValueChanged.InvokeAsync(value);
+    }
+    
+    private string? labelText;
+    
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        labelText = ChildContent.GetText();
     }
 }

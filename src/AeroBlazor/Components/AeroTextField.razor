@@ -2,9 +2,9 @@
 @typeparam T
 <AeroFlexContainer FullWidth="true">
     <MudTextField T="@T" For="@For" Value="@Value" ValueChanged="@(async(e)=>await TriggerValueChangeAsync(e))" 
-                  ReadOnly="@ReadOnly" Label="@Label" Variant="@Variant" HelperText="@HelperText" Margin="@Margin"
+                  ReadOnly="@ReadOnly" Label="@Localizer[Label]" Variant="@Variant" HelperText="@Localizer[HelperText]" Margin="@Margin"
                   Mask="@Mask" InputType="@inputType" FullWidth="@FullWidth" Lines="@Lines"
-                  Class="rounded-xl" Required="@(Required??false)" RequiredError="@RequiredError"/>
+                  Class="rounded-xl" Required="@(Required??false)" RequiredError="@Localizer[RequiredError]"/>
     @if (!string.IsNullOrEmpty(ContextualHelp))
     {
         <AeroContextualHelp HelpText="@ContextualHelp"></AeroContextualHelp>
