@@ -1,0 +1,18 @@
+<style>
+    .scrollable-div {
+        height: 100%;
+        overflow-y: auto;
+    }
+</style>
+<div style="@ContainerStyle">
+    <div class="scrollable-div">
+        @ChildContent
+    </div>
+</div>
+@code 
+{
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public int ViewPortHeight { get; set; } = 100;
+    
+    private string ContainerStyle => $"height: {ViewPortHeight}vh;display: flex; flex-direction: column;";
+}

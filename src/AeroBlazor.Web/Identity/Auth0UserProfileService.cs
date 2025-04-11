@@ -19,7 +19,17 @@ public class Auth0UserProfileService : IUserProfileService
             AuthenticationStateProvider_AuthenticationStateChanged;
     }
 
-    public UserIdentity Identity => this.identityInformation;
+    public UserIdentity Identity
+    {
+        get
+        {
+            if (identityInformation == null)
+            {
+                identityInformation = GetIdentityInfoAsync().GetAwaiter().GetResult();;
+            }
+            return this.identityInformation;
+        }
+    }
 
     public event EventHandler? AuthenticationStateChanged;
 
@@ -83,5 +93,5 @@ public class Auth0UserProfileService : IUserProfileService
     }
 
     private readonly AuthenticationStateProvider authenticationStateProvider;
-    private UserIdentity identityInformation = default;
+    private UserIdentity? identityInformation;
 }

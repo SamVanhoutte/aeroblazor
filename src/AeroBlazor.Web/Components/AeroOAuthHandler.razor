@@ -51,14 +51,14 @@
     @if (!string.IsNullOrEmpty(ErrorMessage))
     {
         <MudItem xs="12">
-            <MudText Typo="Typo.body1" Color="Color.Error">@Error</MudText>
+            <AeroText Color="Color.Error">@Error</AeroText>
             <MudText Typo="Typo.body2" Color="Color.Error">@ErrorMessage</MudText>
         </MudItem>
     }
     @if (SuccessfulAuthentication)
     {
         <MudItem xs="12">
-            <MudText Typo="Typo.body1" Color="Color.Success">Successfully authenticated</MudText>
+            <AeroText Color="Color.Success">Successfully authenticated</AeroText>
         </MudItem>
     }
 </MudGrid>
