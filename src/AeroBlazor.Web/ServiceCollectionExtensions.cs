@@ -1,15 +1,12 @@
 using AeroBlazor.Configuration;
 using AeroBlazor.Security;
 using AeroBlazor.Services;
-using AeroBlazor.Services.Maps;
 using AeroBlazor.Theming;
 using AeroBlazor.Web.Configuration;
 using AeroBlazor.Web.Identity;
 using AeroBlazor.Web.Security;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Web;
-using MudExtensions.Services;
-using MapOptions = AeroBlazor.Configuration.MapOptions;
 
 namespace AeroBlazor.Web;
 

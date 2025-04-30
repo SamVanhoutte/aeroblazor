@@ -1,4 +1,3 @@
-@using MudBlazor.Components
 <AeroFlexContainer>
     <MudSwitch T="bool" Label="@Localizer[Label]" ReadOnly="@ReadOnly" Color="Color.Secondary" ValueChanged="@(async(v) => await TriggerCheckedChangeAsync(v))" Value="@Value" @attributes="AdditionalAttributes">@Localizer[labelText]</MudSwitch>
     @if(!string.IsNullOrEmpty(HelperText)){

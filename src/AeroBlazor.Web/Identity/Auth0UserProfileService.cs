@@ -2,7 +2,6 @@ using AeroBlazor.Configuration;
 using AeroBlazor.Security;
 using AeroBlazor.Services;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.Extensions.Options;
 
 namespace AeroBlazor.Web.Identity;
 

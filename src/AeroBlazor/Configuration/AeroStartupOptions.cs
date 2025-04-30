@@ -1,5 +1,4 @@
 using System.Reflection;
-using AeroBlazor.Services;
 
 namespace AeroBlazor.Configuration;
 

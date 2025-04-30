@@ -1,9 +1,7 @@
 using AeroBlazor.Configuration;
-using AeroBlazor.Security;
 using AeroBlazor.Services;
 using AeroBlazor.Services.Maps;
 using AeroBlazor.Theming;
-using Microsoft.Extensions.DependencyInjection;
 using MudExtensions.Services;
 using MapOptions = AeroBlazor.Configuration.MapOptions;
 
