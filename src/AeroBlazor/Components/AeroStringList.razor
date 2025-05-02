@@ -1,0 +1,36 @@
+@inherits ComponentBase
+
+<AeroTextField Label="@Label" T="string" @bind-Value="@ArrayValue"></AeroTextField>
+@code {
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+    
+    [Parameter]
+    public ICollection<string> Values
+    {
+        get => ValueList.ToArray();
+        set => ValueList = value?.ToList() ?? [""];
+    }
+
+    [Parameter]
+    public EventCallback<ICollection<string>> ValuesChanged { get; set; }
+
+    private string ArrayValue
+    {
+        get => string.Join(",", ValueList);
+        set
+        {
+            ValueList = value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(v => v.Trim())
+                .ToList();
+            TriggerChange();
+        }
+    }
+    
+    private List<string> ValueList = [""];
+
+    private void TriggerChange()
+    {
+        ValuesChanged.InvokeAsync(ValueList.Where(v => !string.IsNullOrWhiteSpace(v)).ToArray());
+    }
+}

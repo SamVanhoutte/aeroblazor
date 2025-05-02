@@ -18,7 +18,9 @@ public class Auth0UserProfileService : IUserProfileService
             AuthenticationStateProvider_AuthenticationStateChanged;
     }
 
-    public UserIdentity Identity
+    public bool IsAuthenticated => Identity != null;
+
+    public UserIdentity? Identity
     {
         get
         {
@@ -87,7 +89,7 @@ public class Auth0UserProfileService : IUserProfileService
         }
         else
         {
-            this.identityInformation = default;
+            this.identityInformation = null;
         }
     }
 
