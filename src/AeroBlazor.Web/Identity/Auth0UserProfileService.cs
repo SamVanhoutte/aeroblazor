@@ -20,17 +20,9 @@ public class Auth0UserProfileService : IUserProfileService
 
     public bool IsAuthenticated => Identity != null;
 
-    public UserIdentity? Identity
-    {
-        get
-        {
-            if (identityInformation == null)
-            {
-                identityInformation = GetIdentityInfoAsync().GetAwaiter().GetResult();;
-            }
-            return this.identityInformation;
-        }
-    }
+    public UserIdentity? Identity => identityInformation ??= GetIdentityInfoAsync().GetAwaiter().GetResult();
+
+    public bool IsAdmin => Identity?.IsAdmin ?? false;
 
     public event EventHandler? AuthenticationStateChanged;
 
@@ -71,11 +63,11 @@ public class Auth0UserProfileService : IUserProfileService
                 .Where(c => c.Type.Equals("picture"))
                 .Select(c => c.Value)
                 .FirstOrDefault() ?? string.Empty;
-            identityInformation.IsAdmin =  user.Claims
+            identityInformation.IsAdmin = user.Claims
                 .Where(c => c.Type.Equals(System.Security.Claims.ClaimTypes.Role))
                 .Select(c => c.Value)
                 .FirstOrDefault()?.Equals("Admin", StringComparison.InvariantCultureIgnoreCase) ?? false;
-                
+
             if (!string.IsNullOrEmpty(aeroOptions.UserIdClaim))
             {
                 identityInformation.UserId = user.Claims
@@ -83,7 +75,7 @@ public class Auth0UserProfileService : IUserProfileService
                     .Select(c => c.Value)
                     .FirstOrDefault() ?? null;
             }
-            
+
             identityInformation.Claims = user.Claims
                 .Select(claim => new KeyValuePair<string, string>(claim.Type, claim.Value)).ToDictionary();
         }

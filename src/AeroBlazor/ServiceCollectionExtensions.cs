@@ -40,7 +40,6 @@ public static class ServiceCollectionExtensions
     private static AeroStartupOptions ConfigureOptions(IServiceCollection services,
         Action<AeroStartupOptions> configureRuntime)
     {
-        Console.WriteLine("Configuring AeroBlazor options");
         var options = AeroStartupOptions.Default;
         if (configureRuntime != null)
         {
