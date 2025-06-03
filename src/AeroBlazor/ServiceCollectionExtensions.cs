@@ -52,7 +52,7 @@ public static class ServiceCollectionExtensions
         configureRuntime(options);
         if (options.InjectHttpClient)
         {
-            services.AddHttpClient();
+            var s = services.AddHttpClient();
         }
 
         services.AddMudExtensions();
