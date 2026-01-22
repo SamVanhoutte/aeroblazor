@@ -21,8 +21,11 @@ public class TableStorageProviderTokenProvider : JwtTokenProvider, ITokenStorage
     public override async Task<IEnumerable<AuthToken>?> GetTokensAsync()
     {
         await EnsureTableClientAsync();
-        var rows = await tableClient.QueryAsync<TableEntity>($"PartitionKey eq '{ClientName}'", maxPerPage: 1000)
-            .ToListAsync().ConfigureAwait(false);
+        var rows = new List<TableEntity>();
+        await foreach (var row in tableClient.QueryAsync<TableEntity>($"PartitionKey eq '{ClientName}'", maxPerPage: 1000).ConfigureAwait(false))
+        {
+            rows.Add(row);
+        }
         return rows.Select(row => new AuthToken(row.RowKey, row["Value"].ToString() ?? ""));
     }
 
