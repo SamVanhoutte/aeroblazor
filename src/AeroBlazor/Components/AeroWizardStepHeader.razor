@@ -2,7 +2,7 @@
     @if (Result?.HasRun ?? false)
     {
         <MudIcon Icon="@(Result.Success ? Icons.Material.Filled.Check : Icons.Material.Filled.Error)" Color="@IconColor" class="mr-3"></MudIcon>
-        <MudText Typo="Typo.body2">@Result.Result</MudText>        
+        <AeroText Typo="Typo.subtitle2">@Result.Result</AeroText>
     }
     else
     {
@@ -12,7 +12,7 @@
         }
         else
         {
-            <MudText Typo="Typo.body1">@Text</MudText>        
+            <AeroText Typo="Typo.subtitle2">@Text</AeroText>
         }
     }
 </div>
