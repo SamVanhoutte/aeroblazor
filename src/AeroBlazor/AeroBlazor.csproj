@@ -17,8 +17,6 @@
         <PackageReference Include="Azure.Data.Tables" Version="12.9.1" />
         <PackageReference Include="BlazorGoogleMaps" Version="4.7.14" />
         <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="7.0.1" />
-        <PackageReference Include="Columbae" Version="2.3.0" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.1" />
         <PackageReference Include="Flurl.Http" Version="4.0.2" />
         <PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.2" />
@@ -45,6 +43,10 @@
         <AutoGen>True</AutoGen>
         <DependentUpon>StandardLanguage.en.resx</DependentUpon>
       </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Columbae\src\Columbae\Columbae.csproj" />
     </ItemGroup>
 
 </Project>
