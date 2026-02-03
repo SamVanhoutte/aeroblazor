@@ -1,5 +1,6 @@
 @inject IClipboardService ClipboardService
 
+<div style="display: flex; flex-direction: column;">
 @if (!string.IsNullOrEmpty(Name))
 {
     <AeroFlexContainer CenterAlign="@CenterAlign">
@@ -36,7 +37,7 @@ else
 {
     <MudSkeleton/>
 }
-
+</div>
 @code {
     [Parameter] public string? Name { get; set; }
     [Parameter] public string? Value { get; set; }

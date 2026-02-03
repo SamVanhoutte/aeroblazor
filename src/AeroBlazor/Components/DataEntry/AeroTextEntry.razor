@@ -1,0 +1,68 @@
+@typeparam T
+<MudGrid Spacing="0">
+    @if (DisableCandidate)
+    {
+        <MudItem xs="12">
+            <AeroTextField T="T?" Value="CandidateValue" ValueChanged="SelectedValueChanged" HelperText="@HelperText"
+                           Label="@Label"></AeroTextField>
+        </MudItem>
+    }
+    else
+    {
+        <MudItem xs="6">
+            <AeroFlexContainer>
+                <AeroTextField T="T" @bind-Value="CandidateValue" Label="@Label"
+                               AdornmentColor="@(ValueChanged ? Color.Success : Color.Default)"
+                               AdornmentIcon="@Icons.Material.Filled.Check" Adornment="Adornment.End"
+                               OnAdornmentClick="@(async () => await UpdateSelectedValue(CandidateValue))"
+                               HelperText="@HelperText"></AeroTextField>
+            </AeroFlexContainer>
+        </MudItem>
+        <MudItem xs="6">
+            <AeroFlexContainer>
+                <AeroTextField T="T" Value="SelectedValue" Label="Selected value" ReadOnly="true"
+                               Adornment="Adornment.End" AdornmentIcon="@SelectedIcon"
+                               OnAdornmentClick="@(async () => await ResetValue())"
+                               HelperText="This value will be used"></AeroTextField>
+            </AeroFlexContainer>
+        </MudItem>
+    }
+</MudGrid>
+
+@code {
+    [Parameter] public bool DisableCandidate { get; set; } = false;
+    [Parameter] public string Label { get; set; }
+    [Parameter] public string? HelperText { get; set; }
+    [Parameter] public T? CandidateValue { get; set; }
+    // [Parameter] public T? ExistingValue { get; set; }
+    [Parameter] public T? SelectedValue { get; set; }
+    [Parameter] public EventCallback<T?> SelectedValueChanged { get; set; }
+    [Parameter] public EventCallback<T?> ExistingValueChanged { get; set; }
+
+    private string? SelectedIcon => ValueChanged ? Icons.Material.Filled.PhonelinkErase : null;
+
+    private bool ValueChanged => (initialValue == null && SelectedValue == null) || (initialValue?.Equals(SelectedValue) ?? false);
+    private T? initialValue;
+    private string DisplayedHelperText => HelperText ?? "Proposed value, click button to accept";
+    protected override void OnInitialized()
+    {
+        initialValue = SelectedValue;
+        if (DisableCandidate)
+        {
+            SelectedValue = CandidateValue ?? SelectedValue;
+        }
+    }
+
+    private async Task ResetValue()
+    {
+        SelectedValue = initialValue;
+    }
+
+    private async Task UpdateSelectedValue(T? newValue)
+    {
+        SelectedValue = newValue;
+        StateHasChanged();
+        await SelectedValueChanged.InvokeAsync(SelectedValue);
+    }
+
+}
