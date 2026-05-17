@@ -10,20 +10,19 @@
         <RepositoryType>github</RepositoryType>
         <PackageReleaseNotes>Initial version</PackageReleaseNotes>
         <Version>1.1.0</Version>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Azure.Data.Tables" Version="12.10.0" />
-        <PackageReference Include="BlazorGoogleMaps" Version="4.7.14" />
+        <PackageReference Include="Azure.Data.Tables" Version="12.11.0" />
+        <PackageReference Include="BlazorGoogleMaps" Version="4.15.1" />
         <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="7.0.1" />
         <PackageReference Include="Columbae" Version="2.3.0" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.8" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.8" />
         <PackageReference Include="Flurl.Http" Version="4.0.2" />
         <PackageReference Include="MudBlazor" Version="7.16.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     </ItemGroup>
     <ItemGroup>
         <SupportedPlatform Include="browser"/>
