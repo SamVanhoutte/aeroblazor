@@ -1,0 +1,31 @@
+@if (string.IsNullOrEmpty(HelperText))
+{
+    <MudIconButton Color="@Color" Icon="@Icon" Size="@Size" Href="@Href" Target="@Target" OnClick="@OnClick"></MudIconButton>
+}
+else
+{
+    <MudTooltip Text="@Localizer[HelperText]">
+        <MudIconButton Color="@Color" Icon="@Icon" Size="@Size" Href="@Href" Target="@Target" OnClick="@OnClick"></MudIconButton>
+    </MudTooltip>
+}
+
+@code {
+    [Parameter] public string Icon { get; set; }
+    [Parameter] public string? HelperText { get; set; }
+    [Parameter] public Size Size { get; set; } = Size.Medium;
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+    [Parameter] public Color Color { get; set; }
+
+    [Parameter]
+    [Category(CategoryTypes.Button.Behavior)]
+    public bool Disabled { get; set; } = false;
+
+    [Parameter]
+    [Category(CategoryTypes.Button.ClickAction)]
+    public string? Target { get; set; }
+
+    [Parameter]
+    [Category(CategoryTypes.Button.ClickAction)]
+    public string? Href { get; set; }
+
+}

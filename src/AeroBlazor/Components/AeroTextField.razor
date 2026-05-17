@@ -7,6 +7,7 @@
                   Adornment="@Adornment" AdornmentIcon="@AdornmentIcon" OnAdornmentClick="@OnAdornmentClick"
                   AdornmentColor="@AdornmentColor"
                   Class="rounded-xl" Required="@(Required ?? false)" RequiredError="@RequiredError"/>
+
     @if (!string.IsNullOrEmpty(ContextualHelp))
     {
         <AeroContextualHelp HelpText="@ContextualHelp"></AeroContextualHelp>

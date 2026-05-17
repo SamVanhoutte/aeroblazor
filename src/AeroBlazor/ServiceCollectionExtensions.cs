@@ -1,5 +1,4 @@
 using AeroBlazor.Configuration;
-using AeroBlazor.Security;
 using AeroBlazor.Services;
 using AeroBlazor.Services.Maps;
 using AeroBlazor.Theming;
@@ -41,17 +40,20 @@ public static class ServiceCollectionExtensions
     private static AeroStartupOptions ConfigureOptions(IServiceCollection services,
         Action<AeroStartupOptions> configureRuntime)
     {
-        Console.WriteLine("Configuring AeroBlazor options");
         var options = AeroStartupOptions.Default;
-        configureRuntime(options);
+        if (configureRuntime != null)
+        {
+            configureRuntime(options);
+        }
+
         if (options.InjectHttpClient)
         {
             var s = services.AddHttpClient();
         }
 
         services.AddMudExtensions();
-
-
+        services.AddSingleton<Localizer>();
+        
         if (options.EnableGoogleMaps)
         {
             services.Configure<MapOptions>(o => { o.GoogleMapKey = options.GoogleMapsConfiguration!.GoogleMapKey; });

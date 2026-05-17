@@ -2,7 +2,7 @@
 
 @if (!string.IsNullOrEmpty(Name))
 {
-    <MudText Typo="Typo.caption" Color="TextColor">@Name</MudText>
+    <MudText Typo="Typo.caption" Color="TextColor">@Localizer[Name]</MudText>
 }
 @if (Value != null)
 {

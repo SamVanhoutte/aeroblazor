@@ -42,7 +42,6 @@ public class WebLocationService(IJSRuntime jsRuntime) : ILocationService
     {
         if (jsRuntime == null)
         {
-            Console.WriteLine("JS Runtime is null again");
             return null;
         }
         var coords = await jsRuntime.InvokeAsync<double[]>("getCoords");

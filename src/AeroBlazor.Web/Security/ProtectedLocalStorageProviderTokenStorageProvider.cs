@@ -1,6 +1,7 @@
+using AeroBlazor.Security;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
-namespace AeroBlazor.Security;
+namespace AeroBlazor.Web.Security;
 
 public class ProtectedLocalStorageProviderTokenStorageProvider(ProtectedLocalStorage storage) : JwtTokenProvider
 {

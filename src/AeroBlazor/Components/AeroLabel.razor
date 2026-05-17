@@ -4,7 +4,7 @@
 @if (!string.IsNullOrEmpty(Name))
 {
     <AeroFlexContainer CenterAlign="@CenterAlign">
-        <MudText Typo="Typo.caption" Color="TextColor">@Name</MudText>
+        <MudText Typo="Typo.caption" Color="TextColor">@Localizer[Name]</MudText>
     </AeroFlexContainer>
 }
 @if (Value != null)
@@ -15,8 +15,8 @@
             <MudText Color="@TextColor" Typo="Typo.body1">@ValueToShow</MudText>
             @if (AllowCopy)
             {
-                <MudIconButton Icon="@Icons.Material.Outlined.ContentCopy" Size="Size.Small"
-                               OnClick="@(async () => await CopyTextToClipboard())"></MudIconButton>
+                <AeroIconButton Icon="@Icons.Material.Outlined.ContentCopy" Size="Size.Small"
+                               OnClick="@(async () => await CopyTextToClipboard())"></AeroIconButton>
             }
         </AeroFlexContainer>
     }
@@ -27,8 +27,8 @@
                      Typo="Typo.body1">@ValueToShow</MudLink>
             @if (AllowCopy)
             {
-                <MudIconButton Icon="@Icons.Material.Outlined.ContentCopy" Size="Size.Small"
-                               OnClick="@(async () => await CopyTextToClipboard())"></MudIconButton>
+                <AeroIconButton Icon="@Icons.Material.Outlined.ContentCopy" Size="Size.Small"
+                               OnClick="@(async () => await CopyTextToClipboard())"></AeroIconButton>
             }
         </AeroFlexContainer>
     }

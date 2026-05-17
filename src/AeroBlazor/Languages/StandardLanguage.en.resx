@@ -21,4 +21,19 @@
     <data name="time/now" xml:space="preserve">
         <value>Now</value>
     </data>
+    <data name="Processing" xml:space="preserve">
+        <value>Processing</value>
+    </data>
+    <data name="Update" xml:space="preserve">
+        <value>Update</value>
+    </data>
+    <data name="OK" xml:space="preserve">
+        <value>OK</value>
+    </data>
+    <data name="Cancel" xml:space="preserve">
+        <value>Cancel</value>
+    </data>
+    <data name="Save" xml:space="preserve">
+        <value>Save</value>
+    </data>
 </root>

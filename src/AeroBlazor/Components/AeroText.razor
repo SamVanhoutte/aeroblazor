@@ -1,12 +1,20 @@
 @inject IClipboardService ClipboardService
 
 <AeroFlexContainer CenterAlign="@CenterAlign">
-    <MudText Typo="@Typo" Color="@ForeColor">@ChildContent</MudText>
+    <MudText Typo="@Typo" Color="@Color">@Localizer[text]</MudText>
 </AeroFlexContainer>
 @code 
 {
     [Parameter] public bool CenterAlign { get; set; } = false;
-    [Parameter] public Color ForeColor { get; set; } = MudBlazor.Color.Default;
+    [Parameter] public Color Color { get; set; } = MudBlazor.Color.Default;
     [Parameter] public Typo Typo { get; set; } = Typo.body1;
     [Parameter] public RenderFragment ChildContent { get; set; }
+    
+    private string? text;
+    
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        text = ChildContent.GetText();
+    }
 }

@@ -13,12 +13,19 @@ public class AeroStartupOptions
     public bool EnableLocationServices { get; set; } = true;
     public string? LanguageResourceName { get; set; }
     public string? LanguageAssemblyName { get; set; }
+    public AuthenticationType? AuthenticationType { get; private set; }
+    public string? UserIdClaim { get; private set; }
     public AeroBehaviorOptions? BehaviorOptions { get; set; }
-
     public void ConfigureMaps(MapOptions? options)
     {
         EnableGoogleMaps = options != null;
         GoogleMapsConfiguration = options;
+    }
+    
+    public void EnableIdentity(AuthenticationType authenticationType, string? userIdClaim = null)
+    {
+        AuthenticationType = authenticationType;
+        UserIdClaim = userIdClaim;
     }
     
     public void SetLanguage(string languageResourceName, Assembly? assembly = null)
@@ -26,5 +33,4 @@ public class AeroStartupOptions
         LanguageResourceName = languageResourceName;
         LanguageAssemblyName = assembly?.FullName;
     }
-
 }

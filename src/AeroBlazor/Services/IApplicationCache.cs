@@ -1,4 +1,4 @@
-namespace AeroBlazor.Caching;
+namespace AeroBlazor.Services;
 
 public interface IApplicationCache<TKey, TValue>
 {

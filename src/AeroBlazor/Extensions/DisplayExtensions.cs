@@ -1,5 +1,4 @@
 using System.Globalization;
-using AeroBlazor.Services;
 using Columbae;
 using Microsoft.Extensions.Localization;
 
@@ -152,6 +151,11 @@ public static class DisplayExtensions
     public static string PrintNumber(this double? value, string? suffix = null)
     {
         if (value == null) return "-";
+        return value.Value.PrintNumber(suffix);
+    }
+    
+    public static string PrintNumber(this double value, string? suffix = null)
+    {
         return $"{value:N2}{suffix}";
     }
 

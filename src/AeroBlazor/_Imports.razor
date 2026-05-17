@@ -11,4 +11,7 @@
 @using AeroBlazor.Extensions
 @using AeroBlazor.Configuration
 @using Microsoft.Extensions.Localization
+@using Microsoft.Extensions.Options
 @inject IStringLocalizer Translator
+@inject IOptions<AeroBehaviorOptions> AeroOptions
+@inject Localizer Localizer

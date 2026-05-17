@@ -1,14 +1,14 @@
 <MudDialog>
     <DialogContent>
-        <MudText>@ContentText</MudText>
+        <MudText>@Localizer[ContentText]</MudText>
         @if (!string.IsNullOrEmpty(Href))
         {
-            <AeroLabel Href="@Href" Value="@(HrefLabel ?? Href)" Target="_blank" />
+            <AeroLabel Href="@Href" Value="@(@Localizer[HrefLabel] ?? Href)" Target="_blank" />
         }
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
+        <MudButton OnClick="Cancel">@Localizer["Cancel"]</MudButton>
+        <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="Submit">@Localizer[ButtonText]</MudButton>
     </DialogActions>
 </MudDialog>
 @code {

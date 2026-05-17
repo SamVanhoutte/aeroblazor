@@ -37,7 +37,6 @@
 //     //     }
 //     //     catch (Exception e)
 //     //     {
-//     //         Console.WriteLine(e);
 //     //         return null;
 //     //     }
 //     // }
@@ -136,7 +135,6 @@
 //     //     }
 //     //     catch (Exception e)
 //     //     {
-//     //         Console.WriteLine(e);
 //     //         return null;
 //     //     }
 //     // }
