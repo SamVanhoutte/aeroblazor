@@ -1,5 +1,6 @@
 @inject IClipboardService ClipboardService
 
+<div style="display: flex; flex-direction: column;">
 @if (!string.IsNullOrEmpty(Name))
 {
     <AeroFlexContainer CenterAlign="@CenterAlign">
@@ -36,7 +37,7 @@ else
 {
     <MudSkeleton/>
 }
-
+</div>
 @code {
     [Parameter] public string? Name { get; set; }
     [Parameter] public string? Value { get; set; }
@@ -49,6 +50,7 @@ else
     [Parameter] public bool Light { get; set; } = false;
     [Parameter] public bool CenterAlign { get; set; } = false;
     [Parameter] public Color? ForeColor { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
 
     private string HrefTarget => Target ?? "_self";
     private string ValueToShow => Secret ? new string('*', Value.Length) : Value;

@@ -4,13 +4,13 @@ using Microsoft.Extensions.Logging;
 
 namespace AeroBlazor.Services;
 
-public class TranslatorService2
+public class TranslatorService
 {
     private readonly IStringLocalizer sharedLocalizer;
-    private readonly ILogger<TranslatorService2> logger;
+    private readonly ILogger<TranslatorService> logger;
 
-    public TranslatorService2(
-        IStringLocalizer sharedLocalizer, ILogger<TranslatorService2> logger)
+    public TranslatorService(
+        IStringLocalizer sharedLocalizer, ILogger<TranslatorService> logger)
     {
         this.sharedLocalizer = sharedLocalizer;
         this.logger = logger;

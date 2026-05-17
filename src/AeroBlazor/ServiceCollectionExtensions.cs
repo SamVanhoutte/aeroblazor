@@ -19,7 +19,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICrashReportHandler, EmptyCrashReportHandler>();
         services.AddScoped<IAlertNotifier, WebAlertNotifier>();
         services.AddScoped<IThemeManager, TThemeManager>();
-        ConfigureOptions(services, configureRuntime);
+        ConfigureOptions(services, configureRuntime ?? (o => { }));
 
         return services;
     }
@@ -27,12 +27,12 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddAeroAppServices<TThemeManager>(this IServiceCollection services,
         Action<AeroStartupOptions>? configureRuntime = null) where TThemeManager : class, IThemeManager
     {
-        services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
+        services.AddLocalization(options => { options.ResourcesPath = "Languages"; });
         services.AddScoped<IClipboardService, WebClipboardService>();
         services.AddScoped<ICrashReportHandler, EmptyCrashReportHandler>();
         services.AddScoped<IAlertNotifier, WebAlertNotifier>();
         services.AddScoped<IThemeManager, TThemeManager>();
-        ConfigureOptions(services, configureRuntime);
+        ConfigureOptions(services, configureRuntime ?? (o => { }));
 
         return services;
     }
@@ -48,7 +48,7 @@ public static class ServiceCollectionExtensions
 
         if (options.InjectHttpClient)
         {
-            services.AddHttpClient();
+            var s = services.AddHttpClient();
         }
 
         services.AddMudExtensions();
